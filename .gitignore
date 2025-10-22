@@ -1,0 +1,158 @@
+# ===============================
+# PYTHON SPECIFIC
+# ===============================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.python-version
+
+# ===============================
+# TESTING & COVERAGE
+# ===============================
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# ===============================
+# DEVELOPMENT TOOLS
+# ===============================
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Linting
+.pylint.d/
+
+# ===============================
+# DEPENDENCIES
+# ===============================
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# npm (if using Node.js tools)
+node_modules/
+package-lock.json
+
+# ===============================
+# APPLICATION DATA
+# ===============================
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Configuration files with sensitive data
+.env.local
+.env.production
+config/secrets.*
+
+# User data files (for this project)
+users.json
+*.json.backup
+
+# ===============================
+# OPERATING SYSTEM
+# ===============================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ===============================
+# TYPESCRIPT SPECIFIC (for future)
+# ===============================
+
+# TypeScript compilation
+*.js.map
+*.d.ts
+dist/
+build/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

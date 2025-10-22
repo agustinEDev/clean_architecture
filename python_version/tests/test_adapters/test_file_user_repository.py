@@ -39,10 +39,8 @@ class TestFileUserRepository(unittest.TestCase):
         # 1. Guardar un usuario
         user = User("Carlos", "Ruiz", "87654321X")
         self.repository.save(user)
-        
         # 2. Crear un NUEVO repositorio con el mismo archivo
         new_repository = FileUserRepository(self.temp_file.name)
-        
         # 3. Verificar que el usuario sigue ahí
         retrieved_user = new_repository.get("87654321X")
         self.assertIsNotNone(retrieved_user)
