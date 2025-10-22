@@ -57,17 +57,26 @@ CleanArchitecture/           # 🏗️ Raíz del proyecto
 │   │   ├── update_user_use_case.py
 │   │   └── delete_user_use_case.py
 │   ├── adapters/           # 🔌 Adaptadores
-│   │   └── repositories/   # Acceso a datos
-│   │       └── file_user_repository.py
+│   │   ├── repositories/   # Acceso a datos
+│   │   │   └── file_user_repository.py
+│   │   └── controllers/    # Control de entrada (futura capa)
+│   ├── external/           # 🌐 Capa externa (configurada para futuro)
 │   ├── tests/              # 🧪 Tests completos por capa
+│   │   ├── __init__.py
 │   │   ├── test_entities/
+│   │   │   ├── __init__.py
+│   │   │   └── test_user.py
 │   │   ├── test_use_cases/
+│   │   │   ├── __init__.py
+│   │   │   ├── test_create_user_use_case.py
+│   │   │   ├── test_find_user_use_case.py
+│   │   │   ├── test_list_users_user_case.py
+│   │   │   ├── test_update_user_use_case.py
+│   │   │   └── test_delete_user_use_case.py
 │   │   └── test_adapters/
-│   ├── scripts/            # 🛠️ Scripts de desarrollo local
-│   │   └── dev.py         # Script de desarrollo para python_version
-│   ├── dev.py              # Script de desarrollo en la raíz
-│   ├── main.py             # Aplicación principal funcional
-│   └── users.json          # Persistencia JSON formateada
+│   │       ├── __init__.py
+│   │       └── test_file_user_repository.py
+│   └── main.py             # Aplicación principal funcional
 ├── README.md               # 📖 Documentación completa
 └── .gitignore              # 🙈 Configuración Git
 ```
