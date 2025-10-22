@@ -35,8 +35,8 @@ Implementar el **mismo sistema de gestión de usuarios** en dos lenguajes difere
 - ✅ Crear usuarios con validación de DNI español
 - ✅ Buscar usuarios por DNI
 - ✅ Listar todos los usuarios
-- ✅ Actualizar información de usuarios
-- ✅ Eliminar usuarios
+- 🚧 Actualizar información de usuarios
+- 🚧 Eliminar usuarios
 
 ## 🐍 Implementación en Python
 
@@ -48,7 +48,9 @@ python_version/
 │   └── users.py             # Clase User con validaciones
 ├── use_cases/               # 💼 Casos de uso
 │   ├── user_repository_interface.py
-│   └── create_user_use_case.py
+│   ├── create_user_use_case.py
+│   ├── find_user_use_case.py
+│   └── list_users_use_case.py
 ├── adapters/                # 🔌 Adaptadores
 │   ├── repositories/        # Acceso a datos
 │   └── controllers/         # Control de entrada
@@ -87,6 +89,26 @@ Los casos de uso implementan la lógica específica de la aplicación:
 ```python
 use_case = CreateUserUseCase(repository)
 user = use_case.execute("Ana", "García", "87654321X")
+```
+
+#### ✅ FindUserUseCase
+- Busca un usuario específico por DNI
+- Retorna el usuario encontrado o None
+- Maneja casos donde el usuario no existe
+
+```python
+use_case = FindUserUseCase(repository)
+user = use_case.execute("87654321X")  # Retorna User o None
+```
+
+#### ✅ ListUsersUseCase
+- Lista todos los usuarios del sistema
+- Retorna una lista de usuarios (puede estar vacía)
+- Operación de solo lectura
+
+```python
+use_case = ListUsersUseCase(repository)
+users = use_case.execute()  # Retorna List[User]
 ```
 
 ### � Capa 3: Interface Adapters
@@ -131,6 +153,8 @@ python tests/test_entities/test_user.py
 
 # Ejecutar tests de casos de uso
 python tests/test_use_cases/test_create_user_use_case.py
+python tests/test_use_cases/test_find_user_use_case.py
+python tests/test_use_cases/test_list_users_user_case.py
 ```
 
 ### 🎭 Test Strategy
@@ -144,20 +168,23 @@ python tests/test_use_cases/test_create_user_use_case.py
 
 ### ✅ Completado
 - [x] **Entities**: User con validación completa de DNI español
-- [x] **Use Cases**: CreateUserUseCase con inyección de dependencias
+- [x] **Use Cases**: 
+  - ✅ CreateUserUseCase con inyección de dependencias
+  - ✅ FindUserUseCase para búsqueda por DNI
+  - ✅ ListUsersUseCase para listar todos los usuarios
 - [x] **Repository Interface**: Contrato bien definido y desacoplado
 - [x] **Adapters**: FileUserRepository con persistencia JSON
 - [x] **Testing Completo**: 
   - ✅ Tests unitarios para User (casos válidos/inválidos)
   - ✅ Tests para CreateUserUseCase con repositorio mock
+  - ✅ Tests para FindUserUseCase con casos de éxito y fallo
+  - ✅ Tests para ListUsersUseCase con datos y sin datos
   - ✅ Tests de integración para FileUserRepository
   - ✅ Tests de persistencia real en archivos
-
-### 🚧 En Progreso
-- [x] **Aplicación Principal**: Main.py integrando todas las capas
+- [x] **Aplicación Principal**: Main.py integrando todas las capas completamente funcional
 
 ### 📋 Pendiente
-- [ ] **Use Cases adicionales**: FindUser, ListUsers, UpdateUser, DeleteUser
+- [ ] **Use Cases adicionales**: UpdateUser, DeleteUser
 - [ ] **Controllers**: Capa de presentación (CLI/Web)
 - [ ] **External**: Base de datos real (SQLite/PostgreSQL)
 
@@ -200,6 +227,8 @@ cd python_version
 # Tests por capa
 python tests/test_entities/test_user.py
 python tests/test_use_cases/test_create_user_use_case.py
+python tests/test_use_cases/test_find_user_use_case.py
+python tests/test_use_cases/test_list_users_user_case.py
 python tests/test_adapters/test_file_user_repository.py
 
 # Ejecutar la aplicación completa
