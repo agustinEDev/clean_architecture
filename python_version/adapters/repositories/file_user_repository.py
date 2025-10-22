@@ -14,7 +14,7 @@ class FileUserRepository(UserRepositoryInterface):
 
     def _persist(self):
         with open(self.file_path, 'w') as file:
-            json.dump(self.users, file)
+            json.dump(self.users, file, indent=4, ensure_ascii=False)
 
     def save(self, user: User) -> User:
         self.users[user._dni] = {
@@ -35,6 +35,16 @@ class FileUserRepository(UserRepositoryInterface):
         if dni in self.users:
             del self.users[dni]
             self._persist()
+
+    def update(self, dni: str, new_username: str, new_last_name: str) -> Optional[User]:
+        user_data = self.users.get(dni)
+        if not user_data:
+            return None
+        user_data['username'] = new_username
+        user_data['lastname'] = new_last_name
+        self.users[dni] = user_data
+        self._persist()
+        return User(user_data['username'], user_data['lastname'], user_data['dni'])
 
     def list(self) -> List[User]:
         return [User(data['username'], data['lastname'], data['dni']) for data in self.users.values()]

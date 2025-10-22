@@ -23,6 +23,14 @@ class InMemoryUserRepository(UserRepositoryInterface):
     def list(self) -> list[User]:
         return list(self.users.values())
 
+    def update(self, dni: str, new_username: str, new_last_name: str) -> Optional[User]:
+        if not self.users.get(dni):
+            return None
+        # Crear nuevo objeto User (inmutabilidad)
+        updated_user = User(new_username, new_last_name, dni)
+        self.users[dni] = updated_user
+        return updated_user
+
 
 class TestCreateUserUseCase(unittest.TestCase):
     def setUp(self):

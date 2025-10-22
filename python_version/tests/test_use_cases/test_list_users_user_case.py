@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from use_cases.list_users_use_case import ListUsersUseCase
 from use_cases.user_repository_interface import UserRepositoryInterface
 from entities.users import User
+from typing import Optional
 
 class InMemoryUserRepository(UserRepositoryInterface):
     def __init__(self):
@@ -22,6 +23,14 @@ class InMemoryUserRepository(UserRepositoryInterface):
 
     def list(self) -> list[User]:
         return list(self.users.values())
+    
+    def update(self, dni: str, new_username: str, new_last_name: str) -> Optional[User]:
+        if not self.users.get(dni):
+            return None
+        # Crear nuevo objeto User (inmutabilidad)
+        updated_user = User(new_username, new_last_name, dni)
+        self.users[dni] = updated_user
+        return updated_user
     
 class TestListUsersUseCase(unittest.TestCase):
     def setUp(self):

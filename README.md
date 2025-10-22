@@ -35,8 +35,8 @@ Implementar el **mismo sistema de gestión de usuarios** en dos lenguajes difere
 - ✅ Crear usuarios con validación de DNI español
 - ✅ Buscar usuarios por DNI
 - ✅ Listar todos los usuarios
-- 🚧 Actualizar información de usuarios
-- 🚧 Eliminar usuarios
+- ✅ Actualizar información de usuarios
+- ✅ Eliminar usuarios
 
 ## 🐍 Implementación en Python
 
@@ -50,7 +50,9 @@ python_version/
 │   ├── user_repository_interface.py
 │   ├── create_user_use_case.py
 │   ├── find_user_use_case.py
-│   └── list_users_use_case.py
+│   ├── list_users_use_case.py
+│   ├── update_user_use_case.py
+│   └── delete_user_use_case.py
 ├── adapters/                # 🔌 Adaptadores
 │   ├── repositories/        # Acceso a datos
 │   └── controllers/         # Control de entrada
@@ -111,14 +113,38 @@ use_case = ListUsersUseCase(repository)
 users = use_case.execute()  # Retorna List[User]
 ```
 
-### � Capa 3: Interface Adapters
+#### ✅ UpdateUserUseCase
+- Actualiza información de un usuario existente
+- Permite modificar nombre y apellidos (DNI inmutable)
+- Valida existencia antes de actualizar
+- Lanza excepción si el usuario no existe
+
+```python
+use_case = UpdateUserUseCase(repository)
+user = use_case.execute("87654321X", "Ana María", "García López")
+```
+
+#### ✅ DeleteUserUseCase
+- Elimina un usuario del sistema por DNI
+- Valida existencia antes de eliminar
+- Lanza excepción si el usuario no existe
+- Operación irreversible
+
+```python
+use_case = DeleteUserUseCase(repository)
+use_case.execute("87654321X")  # Elimina el usuario
+```
+
+### 🔌 Capa 3: Interface Adapters
 
 Los adaptadores conectan las capas internas con el mundo exterior:
 
 #### ✅ FileUserRepository
-- **Persistencia en JSON**: Guarda usuarios en archivo local
+- **Persistencia en JSON**: Guarda usuarios en archivo local con formato legible
+- **JSON formateado**: Indentación automática y soporte de caracteres especiales
 - **Manejo de errores**: Archivos inexistentes o vacíos
 - **Implementación intercambiable**: Cumple el contrato de la interfaz
+- **CRUD completo**: Operaciones Create, Read, Update, Delete
 
 ```python
 # El mismo caso de uso puede usar cualquier repositorio
@@ -148,13 +174,20 @@ use_case = CreateUserUseCase(memory_repo)  # Solo en memoria
 ### Estrategia de Testing por Capas
 
 ```bash
-# Ejecutar tests de entidades
+# Tests por capa
 python tests/test_entities/test_user.py
-
-# Ejecutar tests de casos de uso
 python tests/test_use_cases/test_create_user_use_case.py
 python tests/test_use_cases/test_find_user_use_case.py
 python tests/test_use_cases/test_list_users_user_case.py
+python tests/test_use_cases/test_update_user_use_case.py
+python tests/test_use_cases/test_delete_user_use_case.py
+python tests/test_adapters/test_file_user_repository.py
+
+# Ejecutar todos los tests de una vez
+python -m unittest discover tests/ -v
+
+# Ejecutar la aplicación completa con CRUD funcional
+python main.py
 ```
 
 ### 🎭 Test Strategy
@@ -168,30 +201,33 @@ python tests/test_use_cases/test_list_users_user_case.py
 
 ### ✅ Completado
 - [x] **Entities**: User con validación completa de DNI español
-- [x] **Use Cases**: 
+- [x] **Use Cases CRUD Completo**: 
   - ✅ CreateUserUseCase con inyección de dependencias
   - ✅ FindUserUseCase para búsqueda por DNI
   - ✅ ListUsersUseCase para listar todos los usuarios
+  - ✅ UpdateUserUseCase para modificar usuarios existentes
+  - ✅ DeleteUserUseCase para eliminar usuarios
 - [x] **Repository Interface**: Contrato bien definido y desacoplado
-- [x] **Adapters**: FileUserRepository con persistencia JSON
+- [x] **Adapters**: FileUserRepository con persistencia JSON formateada
 - [x] **Testing Completo**: 
   - ✅ Tests unitarios para User (casos válidos/inválidos)
-  - ✅ Tests para CreateUserUseCase con repositorio mock
-  - ✅ Tests para FindUserUseCase con casos de éxito y fallo
-  - ✅ Tests para ListUsersUseCase con datos y sin datos
+  - ✅ Tests para todos los Use Cases con repositorio mock
+  - ✅ Tests de casos de éxito y manejo de errores
   - ✅ Tests de integración para FileUserRepository
   - ✅ Tests de persistencia real en archivos
-- [x] **Aplicación Principal**: Main.py integrando todas las capas completamente funcional
+  - ✅ Cobertura completa de operaciones CRUD
+- [x] **Aplicación Principal**: Main.py con funcionalidad CRUD completa
+- [x] **Mejoras de Calidad**: 
+  - ✅ JSON formateado con indentación y caracteres especiales
+  - ✅ Manejo consistente de errores
+  - ✅ Arquitectura limpia y código mantenible
 
-### 📋 Pendiente
-- [ ] **Use Cases adicionales**: UpdateUser, DeleteUser
-- [ ] **Controllers**: Capa de presentación (CLI/Web)
-- [ ] **External**: Base de datos real (SQLite/PostgreSQL)
-
-### 📋 Pendiente
-- [ ] **Implementación en TypeScript**
-- [ ] **Comparación entre lenguajes**
-- [ ] **Documentación de patrones aprendidos**
+### 📋 Próximas Mejoras (Opcionales)
+- [ ] **Controllers**: Capa de presentación (CLI interactiva/Web)
+- [ ] **External**: Base de datos real (SQLite/PostgreSQL) 
+- [ ] **Implementación en TypeScript**: Misma funcionalidad en otro lenguaje
+- [ ] **Comparación entre lenguajes**: Análisis de diferencias y similitudes
+- [ ] **Documentación avanzada**: Patrones aprendidos y mejores prácticas
 
 ## 🎓 Conceptos Aprendidos
 

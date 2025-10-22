@@ -1,7 +1,8 @@
 import sys, os
 import unittest
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-from use_cases.find_user_use_case import FindUserUseCase
+from use_cases.delete_user_use_case import DeleteUserUseCase
 from use_cases.user_repository_interface import UserRepositoryInterface
 from entities.users import User
 from typing import Optional
@@ -32,24 +33,22 @@ class InMemoryUserRepository(UserRepositoryInterface):
         self.users[dni] = updated_user
         return updated_user
     
-class TestFindUserUseCase(unittest.TestCase):
+class TestDeleteUserUseCase(unittest.TestCase):
     def setUp(self):
         repository = InMemoryUserRepository()
-        self.use_case = FindUserUseCase(repository)
-    
-    def test_find_existing_user(self):
-        # 1. Crear y guardar un usuario
-        user = User("Jane", "Doe", "87654321X")
-        self.use_case.repository.save(user)
-        # 2. Buscarlo con FindUserUseCase
-        found_user = self.use_case.execute("87654321X")
-        # 3. Verificar que es el correcto
-        self.assertEqual(found_user._username, "Jane")
-        self.assertEqual(found_user._lastname, "Doe")
-        self.assertEqual(found_user._dni, "87654321X")
+        self.use_case = DeleteUserUseCase(repository)
 
-    def test_find_nonexistent_user(self):
-        # 1. Buscar un DNI que no existe
+    def test_delete_existing_user(self):
+        # 1. Crear y guardar un usuario
+        user = User("Alice", "Smith", "12345678Z")
+        self.use_case.repository.save(user)
+        # 2. Eliminarlo con DeleteUserUseCase
+        self.use_case.execute("12345678Z")
+        # 3. Verificar que ya no existe
+        self.assertIsNone(self.use_case.repository.get("12345678Z"))
+
+    def test_delete_nonexistent_user(self):
+        # 1. Intentar eliminar un usuario que no existe
         with self.assertRaises(ValueError):
             self.use_case.execute("00000000Y")
 
