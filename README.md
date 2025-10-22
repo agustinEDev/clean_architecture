@@ -89,7 +89,26 @@ use_case = CreateUserUseCase(repository)
 user = use_case.execute("Ana", "García", "87654321X")
 ```
 
-### 🔍 Características Técnicas
+### � Capa 3: Interface Adapters
+
+Los adaptadores conectan las capas internas con el mundo exterior:
+
+#### ✅ FileUserRepository
+- **Persistencia en JSON**: Guarda usuarios en archivo local
+- **Manejo de errores**: Archivos inexistentes o vacíos
+- **Implementación intercambiable**: Cumple el contrato de la interfaz
+
+```python
+# El mismo caso de uso puede usar cualquier repositorio
+file_repo = FileUserRepository("users.json")
+memory_repo = InMemoryUserRepository()
+
+# Ambos funcionan exactamente igual
+use_case = CreateUserUseCase(file_repo)  # Persiste en archivo
+use_case = CreateUserUseCase(memory_repo)  # Solo en memoria
+```
+
+### �🔍 Características Técnicas
 
 #### Validación de DNI
 - ✅ Formato: 8 números + 1 letra
@@ -100,6 +119,7 @@ user = use_case.execute("Ana", "García", "87654321X")
 - **Single Responsibility**: Cada clase tiene una responsabilidad
 - **Dependency Inversion**: Los Use Cases dependen de abstracciones
 - **Interface Segregation**: Interfaces específicas y pequeñas
+- **Open/Closed**: Fácil agregar nuevos repositorios sin modificar código existente
 
 ## 🧪 Testing
 
@@ -113,24 +133,33 @@ python tests/test_entities/test_user.py
 python tests/test_use_cases/test_create_user_use_case.py
 ```
 
-### 🎭 Test Doubles
-- **InMemoryUserRepository**: Implementación en memoria para testing
-- **Casos válidos e inválidos**: Cobertura completa de escenarios
-- **Testing aislado**: Cada capa se testea independientemente
+### 🎭 Test Strategy
+- **InMemoryUserRepository**: Mock para testing de Use Cases
+- **FileUserRepository Tests**: Verificación de persistencia real
+- **Temporary Files**: Tests aislados sin efectos secundarios
+- **Cobertura completa**: Casos válidos, inválidos y edge cases
+- **Testing por capas**: Cada capa se testea independientemente
 
 ## 📈 Progreso del Proyecto
 
 ### ✅ Completado
-- [x] **Entities**: User con validación completa
-- [x] **Use Cases**: CreateUserUseCase
-- [x] **Repository Interface**: Contrato definido
-- [x] **Testing**: Tests unitarios para entities y use cases
+- [x] **Entities**: User con validación completa de DNI español
+- [x] **Use Cases**: CreateUserUseCase con inyección de dependencias
+- [x] **Repository Interface**: Contrato bien definido y desacoplado
+- [x] **Adapters**: FileUserRepository con persistencia JSON
+- [x] **Testing Completo**: 
+  - ✅ Tests unitarios para User (casos válidos/inválidos)
+  - ✅ Tests para CreateUserUseCase con repositorio mock
+  - ✅ Tests de integración para FileUserRepository
+  - ✅ Tests de persistencia real en archivos
 
 ### 🚧 En Progreso
+- [x] **Aplicación Principal**: Main.py integrando todas las capas
+
+### 📋 Pendiente
 - [ ] **Use Cases adicionales**: FindUser, ListUsers, UpdateUser, DeleteUser
-- [ ] **Adapters**: Controladores y repositorio real
-- [ ] **External**: Base de datos simulada
-- [ ] **Main**: Aplicación completa funcionando
+- [ ] **Controllers**: Capa de presentación (CLI/Web)
+- [ ] **External**: Base de datos real (SQLite/PostgreSQL)
 
 ### 📋 Pendiente
 - [ ] **Implementación en TypeScript**
@@ -151,10 +180,12 @@ python tests/test_use_cases/test_create_user_use_case.py
 - ✅ **Test-Driven Development** por capas
 
 ### 💡 Beneficios Observados
-- ✅ **Testabilidad**: Cada capa se puede testear aisladamente
+- ✅ **Testabilidad**: Cada capa se puede testear aisladamente con mocks
 - ✅ **Mantenibilidad**: Cambios localizados por responsabilidad
-- ✅ **Flexibilidad**: Fácil cambiar implementaciones
-- ✅ **Comprensibilidad**: Estructura clara y predecible
+- ✅ **Flexibilidad**: Cambiar de archivo a base de datos sin tocar lógica
+- ✅ **Comprensibilidad**: Flujo de dependencias claro hacia el centro
+- ✅ **Reutilización**: El mismo Use Case funciona con cualquier repositorio
+- ✅ **Evolución**: Fácil agregar nuevas funcionalidades sin romper existentes
 
 ## 🚀 Cómo ejecutar el proyecto
 
@@ -165,10 +196,13 @@ cd CleanArchitecture
 
 # Ejecutar tests
 cd python_version
+
+# Tests por capa
 python tests/test_entities/test_user.py
 python tests/test_use_cases/test_create_user_use_case.py
+python tests/test_adapters/test_file_user_repository.py
 
-# (Próximamente) Ejecutar la aplicación
+# Ejecutar la aplicación completa
 python main.py
 ```
 
