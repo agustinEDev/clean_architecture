@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 from use_cases.create_user_use_case import CreateUserUseCase
 from use_cases.user_repository_interface import UserRepositoryInterface
 from entities.users import User
+from typing import Optional
 
 class InMemoryUserRepository(UserRepositoryInterface):
     def __init__(self):

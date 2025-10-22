@@ -43,25 +43,33 @@ Implementar el **mismo sistema de gestión de usuarios** en dos lenguajes difere
 ### 📁 Estructura del Proyecto
 
 ```
-python_version/
-├── entities/                 # 🎯 Entidades del negocio
-│   └── users.py             # Clase User con validaciones
-├── use_cases/               # 💼 Casos de uso
-│   ├── user_repository_interface.py
-│   ├── create_user_use_case.py
-│   ├── find_user_use_case.py
-│   ├── list_users_use_case.py
-│   ├── update_user_use_case.py
-│   └── delete_user_use_case.py
-├── adapters/                # 🔌 Adaptadores
-│   ├── repositories/        # Acceso a datos
-│   └── controllers/         # Control de entrada
-├── external/                # 🌐 Capa externa
-│   └── database/           # Base de datos simulada
-├── tests/                   # 🧪 Tests por capa
-│   ├── test_entities/
-│   └── test_use_cases/
-└── main.py                  # Punto de entrada
+CleanArchitecture/           # 🏗️ Raíz del proyecto
+├── scripts/                 # 🛠️ Scripts de desarrollo y CI/CD
+│   └── dev.py              # Script inteligente para validación y tests
+├── python_version/          # 🐍 Implementación en Python
+│   ├── entities/           # 🎯 Entidades del negocio
+│   │   └── users.py        # Clase User con validaciones
+│   ├── use_cases/          # 💼 Casos de uso
+│   │   ├── user_repository_interface.py
+│   │   ├── create_user_use_case.py
+│   │   ├── find_user_use_case.py
+│   │   ├── list_users_use_case.py
+│   │   ├── update_user_use_case.py
+│   │   └── delete_user_use_case.py
+│   ├── adapters/           # 🔌 Adaptadores
+│   │   └── repositories/   # Acceso a datos
+│   │       └── file_user_repository.py
+│   ├── tests/              # 🧪 Tests completos por capa
+│   │   ├── test_entities/
+│   │   ├── test_use_cases/
+│   │   └── test_adapters/
+│   ├── scripts/            # 🛠️ Scripts de desarrollo local
+│   │   └── dev.py         # Script de desarrollo para python_version
+│   ├── dev.py              # Script de desarrollo en la raíz
+│   ├── main.py             # Aplicación principal funcional
+│   └── users.json          # Persistencia JSON formateada
+├── README.md               # 📖 Documentación completa
+└── .gitignore              # 🙈 Configuración Git
 ```
 
 ### 🎯 Capa 1: Entities
@@ -169,12 +177,46 @@ use_case = CreateUserUseCase(memory_repo)  # Solo en memoria
 - **Interface Segregation**: Interfaces específicas y pequeñas
 - **Open/Closed**: Fácil agregar nuevos repositorios sin modificar código existente
 
+## 🛠️ Desarrollo y CI/CD
+
+### Script de Desarrollo Inteligente
+
+El proyecto incluye un sistema de desarrollo automatizado con `scripts/dev.py`:
+
+```bash
+# Ejecutar validación completa del proyecto
+python scripts/dev.py
+```
+
+#### 🎯 Funcionalidades del Script de Desarrollo:
+- **🔍 Validación de Estructura**: Verifica que todos los archivos y carpetas estén presentes
+- **📊 Estadísticas del Proyecto**: Cuenta tests, casos de uso, documentación
+- **📝 Estado de Git**: Muestra cambios pendientes y rama actual  
+- **🧪 Ejecución Automática de Tests**: Ejecuta todos los tests desde la raíz
+- **✅ Exit Codes Apropiados**: 0 para éxito, 1 para errores (compatible con CI/CD)
+
+#### 🚀 Integración con Workflows
+Compatible con herramientas de automatización como **Warp Drive**:
+```bash
+wf-dev-push-unitest  # Workflow automático: validar → test → commit → push
+```
+
+El script valida tanto archivos de la raíz (README, .gitignore) como de `python_version/`, asegurando que no se pierdan cambios en ninguna parte del proyecto.
+
 ## 🧪 Testing
 
 ### Estrategia de Testing por Capas
 
 ```bash
-# Tests por capa
+# Validación completa + tests (RECOMENDADO para desarrollo)
+python scripts/dev.py
+
+# Ejecutar solo tests desde python_version/
+cd python_version
+python -m unittest discover tests/ -v
+
+# O ejecutar tests por capa individualmente
+cd python_version
 python tests/test_entities/test_user.py
 python tests/test_use_cases/test_create_user_use_case.py
 python tests/test_use_cases/test_find_user_use_case.py
@@ -183,10 +225,8 @@ python tests/test_use_cases/test_update_user_use_case.py
 python tests/test_use_cases/test_delete_user_use_case.py
 python tests/test_adapters/test_file_user_repository.py
 
-# Ejecutar todos los tests de una vez
-python -m unittest discover tests/ -v
-
 # Ejecutar la aplicación completa con CRUD funcional
+cd python_version
 python main.py
 ```
 
@@ -221,6 +261,13 @@ python main.py
   - ✅ JSON formateado con indentación y caracteres especiales
   - ✅ Manejo consistente de errores
   - ✅ Arquitectura limpia y código mantenible
+- [x] **Sistema de Desarrollo y CI/CD**:
+  - ✅ Script de desarrollo inteligente (scripts/dev.py)
+  - ✅ Validación automática de estructura del proyecto
+  - ✅ Ejecución automatizada de tests desde cualquier ubicación
+  - ✅ Integración con workflows de automatización (Warp Drive)
+  - ✅ Detección de cambios en todo el repositorio
+  - ✅ Exit codes apropiados para CI/CD
 
 ### 📋 Próximas Mejoras (Opcionales)
 - [ ] **Controllers**: Capa de presentación (CLI interactiva/Web)
@@ -257,19 +304,30 @@ python main.py
 git clone <tu-repo>
 cd CleanArchitecture
 
-# Ejecutar tests
+# Opción 1: Validación completa + tests (RECOMENDADO)
+python scripts/dev.py
+
+# Opción 2: Solo ejecutar la aplicación
 cd python_version
-
-# Tests por capa
-python tests/test_entities/test_user.py
-python tests/test_use_cases/test_create_user_use_case.py
-python tests/test_use_cases/test_find_user_use_case.py
-python tests/test_use_cases/test_list_users_user_case.py
-python tests/test_adapters/test_file_user_repository.py
-
-# Ejecutar la aplicación completa
 python main.py
+
+# Opción 3: Solo ejecutar tests
+cd python_version
+python -m unittest discover tests/ -v
+
+# Opción 4: Desarrollo con workflow automatizado (requiere Warp Drive)
+wf-dev-push-unitest  # Valida, testea, commitea y hace push automáticamente
 ```
+
+### 🎯 Flujo de Desarrollo Recomendado
+
+1. **🔍 Validar**: `python scripts/dev.py` (estructura + tests)
+2. **💻 Desarrollar**: Hacer cambios en cualquier parte del proyecto  
+3. **🧪 Verificar**: `python scripts/dev.py` (validar cambios)
+4. **📝 Commitear**: `git add . && git commit -m "mensaje"`
+5. **🚀 Push**: `git push`
+
+O usar el workflow automatizado: `wf-dev-push-unitest` que hace todo en un comando.
 
 ## 🤝 Contribuciones
 
