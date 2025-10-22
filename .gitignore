@@ -4,6 +4,9 @@ python_version/.venv/
 
 # Python cache files
 __pycache__/
+python_version/*/__pycache__/
+python_version/**/__pycache__/
+python_version/**/*.pyc
 *.pyc
 
 # Data files (application specific)
