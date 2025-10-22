@@ -37,6 +37,9 @@ ENV/
 env.bak/
 venv.bak/
 .python-version
+python_version/.venv/
+python_version/env/
+python_version/venv/
 
 # ===============================
 # TESTING & COVERAGE
@@ -117,8 +120,12 @@ temp/
 config/secrets.*
 
 # User data files (for this project)
-users.json
-*.json.backup
+python_version/users.json
+python_version/*.json
+python_version/*.json.backup
+typescript_version/users.json  
+typescript_version/*.json
+typescript_version/*.json.backup
 
 # ===============================
 # OPERATING SYSTEM
