@@ -16,5 +16,9 @@ class UserRepositoryInterface(ABC):
         pass
 
     @abstractmethod
+    def update(self, dni: str, new_username: str, new_last_name: str) -> Optional[User]:
+        pass
+
+    @abstractmethod
     def list(self) -> List[User]:
         pass

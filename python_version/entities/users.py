@@ -12,7 +12,7 @@ class User:
         self._dni = dni
 
     def __str__(self):
-        return f"User: {self._username} {self._lastname}, DNI: {self._dni}"
+        return f"{self._username} {self._lastname} - DNI: {self._dni}"
 
     def dni_validation(self, dni: str) -> bool:
         # Spanish dni validation

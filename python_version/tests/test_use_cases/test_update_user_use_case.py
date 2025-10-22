@@ -1,7 +1,8 @@
 import sys, os
 import unittest
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-from use_cases.create_user_use_case import CreateUserUseCase
+from use_cases.update_user_use_case import UpdateUserUseCase
 from use_cases.user_repository_interface import UserRepositoryInterface
 from entities.users import User
 from typing import Optional
@@ -23,7 +24,7 @@ class InMemoryUserRepository(UserRepositoryInterface):
 
     def list(self) -> list[User]:
         return list(self.users.values())
-
+    
     def update(self, dni: str, new_username: str, new_last_name: str) -> Optional[User]:
         if not self.users.get(dni):
             return None
@@ -32,26 +33,24 @@ class InMemoryUserRepository(UserRepositoryInterface):
         self.users[dni] = updated_user
         return updated_user
 
-
-class TestCreateUserUseCase(unittest.TestCase):
+class TestUpdateUserUseCase(unittest.TestCase):
     def setUp(self):
         self.repository = InMemoryUserRepository()
-        self.use_case = CreateUserUseCase(self.repository)
+        self.use_case = UpdateUserUseCase(self.repository)
+        # Pre-populate the repository with a user
+        self.existing_user = User("John", "Doe", "12345678Z")
+        self.repository.save(self.existing_user)
     
-    def test_create_valid_user(self):
-        result = self.use_case.execute("John", "Doe", "76826889N")
+    def test_update_existing_user(self):
+        result = self.use_case.execute("12345678Z", "Jane", "Smith")
         self.assertIsNotNone(result)
-        self.assertEqual(result._username, "John")
-        self.assertEqual(result._lastname, "Doe")
-        self.assertEqual(result._dni, "76826889N")
+        self.assertEqual(result._username, "Jane")
+        self.assertEqual(result._lastname, "Smith")
+        self.assertEqual(result._dni, "12345678Z")
 
-    def test_create_user_with_invalid_data(self):
+    def test_update_nonexistent_user(self):
         with self.assertRaises(ValueError):
-            self.use_case.execute("", "Doe", "12345678Z")
-        with self.assertRaises(ValueError):
-            self.use_case.execute("John", "", "12345678Z")
-        with self.assertRaises(ValueError):
-            self.use_case.execute("John", "Doe", "")
+            self.use_case.execute("87654321X", "Alice", "Johnson")
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

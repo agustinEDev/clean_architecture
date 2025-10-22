@@ -1,0 +1,17 @@
+# Virtual environments
+python_version/.venv/
+.venv/
+
+# Python cache files
+__pycache__/
+python_version/*/__pycache__/
+python_version/**/*.pyc
+*.pyc
+
+# Data files (application specific)
+python_version/users.json
+python_version/*.json
+*.json
+
+# macOS
+.DS_Store
