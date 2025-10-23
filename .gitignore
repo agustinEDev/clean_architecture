@@ -1,3 +1,7 @@
+# =============================================================================
+# PYTHON PROJECT (python_version/)
+# =============================================================================
+
 # Virtual environments
 python_version/.venv/
 .venv/
@@ -11,7 +15,26 @@ python_version/**/*.pyc
 # Data files (application specific)
 python_version/users.json
 python_version/*.json
-*.json
+
+# =============================================================================
+# TYPESCRIPT PROJECT (typescript_version/)
+# =============================================================================
+
+# Node.js dependencies
+typescript_version/node_modules/
+
+# TypeScript compilation output
+typescript_version/dist/
+
+# npm lockfile (opcional - some teams prefer to include it)
+# typescript_version/package-lock.json
+
+# =============================================================================
+# SYSTEM FILES
+# =============================================================================
 
 # macOS
 .DS_Store
+
+# General JSON data files (if needed)
+*.json

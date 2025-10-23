@@ -38,15 +38,13 @@ Implementar el **mismo sistema de gestión de usuarios** en dos lenguajes difere
 - ✅ Actualizar información de usuarios
 - ✅ Eliminar usuarios
 
-## 🐍 Implementación en Python
-
-### 📁 Estructura del Proyecto
+##  Estructura del Proyecto
 
 ```
 CleanArchitecture/           # 🏗️ Raíz del proyecto
 ├── scripts/                 # 🛠️ Scripts de desarrollo y CI/CD
 │   └── dev.py              # Script inteligente para validación y tests
-├── python_version/          # 🐍 Implementación en Python
+├── python_version/          # 🐍 Implementación en Python (COMPLETA)
 │   ├── entities/           # 🎯 Entidades del negocio
 │   │   └── users.py        # Clase User con validaciones
 │   ├── use_cases/          # 💼 Casos de uso
@@ -57,28 +55,32 @@ CleanArchitecture/           # 🏗️ Raíz del proyecto
 │   │   ├── update_user_use_case.py
 │   │   └── delete_user_use_case.py
 │   ├── adapters/           # 🔌 Adaptadores
-│   │   ├── repositories/   # Acceso a datos
-│   │   │   └── file_user_repository.py
-│   │   └── controllers/    # Control de entrada (futura capa)
-│   ├── external/           # 🌐 Capa externa (configurada para futuro)
+│   │   └── repositories/   # Acceso a datos
+│   │       └── file_user_repository.py
 │   ├── tests/              # 🧪 Tests completos por capa
-│   │   ├── __init__.py
 │   │   ├── test_entities/
-│   │   │   ├── __init__.py
-│   │   │   └── test_user.py
 │   │   ├── test_use_cases/
-│   │   │   ├── __init__.py
-│   │   │   ├── test_create_user_use_case.py
-│   │   │   ├── test_find_user_use_case.py
-│   │   │   ├── test_list_users_user_case.py
-│   │   │   ├── test_update_user_use_case.py
-│   │   │   └── test_delete_user_use_case.py
 │   │   └── test_adapters/
-│   │       ├── __init__.py
-│   │       └── test_file_user_repository.py
 │   └── main.py             # Aplicación principal funcional
+├── typescript_version/      # 🔷 Implementación en TypeScript (EN DESARROLLO)
+│   ├── src/                # 📂 Código fuente
+│   │   └── shared/         # 🔧 Utilidades compartidas
+│   │       └── health.ts   # Health check para verificar el tooling
+│   ├── tests/              # 🧪 Tests unitarios con Vitest
+│   │   └── shared/
+│   │       └── health.spec.ts
+│   ├── main.ts             # Punto de entrada de la aplicación
+│   ├── package.json        # Dependencias y scripts de Node.js
+│   ├── tsconfig.json       # Configuración de TypeScript
+│   └── vitest.config.ts    # Configuración de tests
 ├── README.md               # 📖 Documentación completa
 └── .gitignore              # 🙈 Configuración Git
+```
+
+## 🐍 Implementación en Python (COMPLETA)
+
+### 📁 Estructura Detallada
+
 ```
 
 ### 🎯 Capa 1: Entities
@@ -212,6 +214,77 @@ wf-dev-push-unitest  # Workflow automático: validar → test → commit → pus
 
 El script valida tanto archivos de la raíz (README, .gitignore) como de `python_version/`, asegurando que no se pierdan cambios en ninguna parte del proyecto.
 
+## 🔷 Implementación en TypeScript (EN DESARROLLO)
+
+### 🚀 Configuración y Tooling
+
+La versión TypeScript está configurada con un stack moderno de desarrollo:
+
+- **TypeScript 5.9.3**: Tipado estático y compilación
+- **tsx 4.20.6**: Ejecución rápida de TypeScript sin compilación previa
+- **Vitest 4.0.2**: Framework de testing moderno y rápido
+- **ES Modules**: Configuración moderna con import/export
+- **Node.js Types**: Soporte completo para APIs de Node.js
+
+### 📂 Estado Actual
+
+#### ✅ Completado:
+- **Health Check System**: Sistema trivial de verificación de salud
+- **Tooling Setup**: Configuración completa de desarrollo y testing
+- **Project Structure**: Estructura base organizada por capas
+- **Testing Framework**: Vitest configurado con cobertura completa
+
+#### 🔧 Health Check (`src/shared/health.ts`):
+```typescript
+// Interface para el estado de salud
+export interface HealthStatus {
+  status: 'healthy' | 'unhealthy';
+  timestamp: Date;
+  uptime: number;
+  service: string;
+}
+
+// Función principal de health check
+export function getHealthStatus(serviceName?: string): HealthStatus;
+
+// Verificación de disponibilidad del servicio
+export function isServiceReady(): boolean;
+```
+
+### 🧪 Testing TypeScript
+
+```bash
+# Ejecutar tests una vez
+cd typescript_version
+npm test
+
+# Ejecutar tests en modo watch (desarrollo)
+npm run test:watch
+
+# Ejecutar código directamente con tsx
+npm run dev
+
+# Compilar TypeScript a JavaScript
+npm run build
+
+# Ejecutar código compilado
+npm start
+```
+
+### 📋 Próximos Pasos (TypeScript):
+- [ ] **Value Objects**: Implementar DNI y User entity
+- [ ] **Domain Layer**: Entidades de dominio equivalentes a Python
+- [ ] **Use Cases**: Casos de uso CRUD con inyección de dependencias
+- [ ] **Repository Pattern**: Interfaces y implementaciones
+- [ ] **Infrastructure**: Adaptadores para persistencia
+- [ ] **Testing**: Cobertura completa por capas como en Python
+
+### 🎯 Objetivo de la Implementación TypeScript:
+Demostrar que **Clean Architecture es independiente del lenguaje** implementando exactamente la misma funcionalidad CRUD con la misma estructura de capas, pero aprovechando las ventajas específicas de TypeScript:
+- **Type Safety**: Prevención de errores en tiempo de compilación
+- **Interfaces explícitas**: Contratos claros entre capas
+- **Modern Tooling**: Desarrollo eficiente con hot reload y testing rápido
+
 ## 🧪 Testing
 
 ### Estrategia de Testing por Capas
@@ -248,7 +321,7 @@ python main.py
 
 ## 📈 Progreso del Proyecto
 
-### ✅ Completado
+### 🐍 Python Implementation - ✅ COMPLETA
 - [x] **Entities**: User con validación completa de DNI español
 - [x] **Use Cases CRUD Completo**: 
   - ✅ CreateUserUseCase con inyección de dependencias
@@ -278,11 +351,33 @@ python main.py
   - ✅ Detección de cambios en todo el repositorio
   - ✅ Exit codes apropiados para CI/CD
 
-### 📋 Próximas Mejoras (Opcionales)
+### 🔷 TypeScript Implementation - 🚧 EN DESARROLLO
+- [x] **Project Setup**: Configuración completa de desarrollo
+  - ✅ TypeScript 5.9.3 + tsx 4.20.6 para ejecución rápida
+  - ✅ Vitest 4.0.2 para testing moderno
+  - ✅ ES Modules con import/export
+  - ✅ Configuración tsconfig.json optimizada
+  - ✅ Scripts de desarrollo (dev, build, test, test:watch)
+- [x] **Health Check System**: Sistema de verificación trivial
+  - ✅ Interface HealthStatus con tipos estrictos
+  - ✅ Funciones getHealthStatus() e isServiceReady()
+  - ✅ 10 tests unitarios con cobertura completa
+  - ✅ Verificación de tooling y compilación
+
+### 📋 Próximos Pasos - TypeScript
+- [ ] **Value Objects**: Implementar DNI validation y User entity en TypeScript
+- [ ] **Domain Layer**: Entidades equivalentes con tipado estático
+- [ ] **Use Cases**: Casos de uso CRUD con interfaces TypeScript
+- [ ] **Repository Pattern**: Contratos e implementaciones tipadas
+- [ ] **Infrastructure**: Adaptadores de persistencia
+- [ ] **Testing**: Cobertura completa por capas
+- [ ] **Main Application**: Aplicación funcional equivalente a Python
+
+### 📋 Mejoras Futuras (Ambas Implementaciones)
 - [ ] **Controllers**: Capa de presentación (CLI interactiva/Web)
-- [ ] **External**: Base de datos real (SQLite/PostgreSQL) 
-- [ ] **Implementación en TypeScript**: Misma funcionalidad en otro lenguaje
-- [ ] **Comparación entre lenguajes**: Análisis de diferencias y similitudes
+- [ ] **External**: Base de datos real (SQLite/PostgreSQL)
+- [ ] **Comparación entre lenguajes**: Análisis detallado de diferencias y similitudes
+- [ ] **Performance Benchmarks**: Comparativa de rendimiento
 - [ ] **Documentación avanzada**: Patrones aprendidos y mejores prácticas
 
 ## 🎓 Conceptos Aprendidos
@@ -308,6 +403,7 @@ python main.py
 
 ## 🚀 Cómo ejecutar el proyecto
 
+### 🐍 Python Version (COMPLETA)
 ```bash
 # Clonar el repositorio
 git clone <tu-repo>
@@ -316,7 +412,7 @@ cd CleanArchitecture
 # Opción 1: Validación completa + tests (RECOMENDADO)
 python scripts/dev.py
 
-# Opción 2: Solo ejecutar la aplicación
+# Opción 2: Solo ejecutar la aplicación CRUD
 cd python_version
 python main.py
 
@@ -326,6 +422,30 @@ python -m unittest discover tests/ -v
 
 # Opción 4: Desarrollo con workflow automatizado (requiere Warp Drive)
 wf-dev-push-unitest  # Valida, testea, commitea y hace push automáticamente
+```
+
+### 🔷 TypeScript Version (EN DESARROLLO)
+```bash
+# Navegar al proyecto TypeScript
+cd typescript_version
+
+# Instalar dependencias (solo la primera vez)
+npm install
+
+# Ejecutar health check (verificar tooling)
+npm run dev
+
+# Ejecutar tests
+npm test
+
+# Ejecutar tests en modo watch (desarrollo)
+npm run test:watch
+
+# Compilar a JavaScript
+npm run build
+
+# Ejecutar código compilado
+npm start
 ```
 
 ### 🎯 Flujo de Desarrollo Recomendado
