@@ -1,9 +1,8 @@
 # 🏗️ Clean Architecture Learning Project
 
-> Un proyecto educativo paso a paso para aprender Clean Architecture implementando un sistema de gestión de usuarios en Python y TypeScript.
+> Un proyecto educativo paso a paso para aprender Clean Architecture implementando un sistema de gestión de usuarios en Python.
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-4.0+-blue.svg)](https://typescriptlang.org)
 [![Tests](https://img.shields.io/badge/Tests-✅%20Passing-green.svg)](#testing)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean-brightgreen.svg)](#arquitectura)
 
@@ -29,7 +28,7 @@ Clean Architecture es un patrón de diseño que separa el código en capas conc�
 
 ## 🎯 Objetivo del Proyecto
 
-Implementar el **mismo sistema de gestión de usuarios** en dos lenguajes diferentes para entender cómo Clean Architecture es **independiente del lenguaje** y las **ventajas** que proporciona.
+Implementar un **sistema de gestión de usuarios** en Python para entender los principios de Clean Architecture y las **ventajas** que proporciona en el desarrollo de software.
 
 ### ✨ Características del Sistema
 - ✅ Crear usuarios con validación de DNI español
@@ -62,17 +61,6 @@ CleanArchitecture/           # 🏗️ Raíz del proyecto
 │   │   ├── test_use_cases/
 │   │   └── test_adapters/
 │   └── main.py             # Aplicación principal funcional
-├── typescript_version/      # 🔷 Implementación en TypeScript (EN DESARROLLO)
-│   ├── src/                # 📂 Código fuente
-│   │   └── shared/         # 🔧 Utilidades compartidas
-│   │       └── health.ts   # Health check para verificar el tooling
-│   ├── tests/              # 🧪 Tests unitarios con Vitest
-│   │   └── shared/
-│   │       └── health.spec.ts
-│   ├── main.ts             # Punto de entrada de la aplicación
-│   ├── package.json        # Dependencias y scripts de Node.js
-│   ├── tsconfig.json       # Configuración de TypeScript
-│   └── vitest.config.ts    # Configuración de tests
 ├── README.md               # 📖 Documentación completa
 └── .gitignore              # 🙈 Configuración Git
 ```
@@ -213,77 +201,6 @@ wf-dev-push-unitest  # Workflow automático: validar → test → commit → pus
 ```
 
 El script valida tanto archivos de la raíz (README, .gitignore) como de `python_version/`, asegurando que no se pierdan cambios en ninguna parte del proyecto.
-
-## 🔷 Implementación en TypeScript (EN DESARROLLO)
-
-### 🚀 Configuración y Tooling
-
-La versión TypeScript está configurada con un stack moderno de desarrollo:
-
-- **TypeScript 5.9.3**: Tipado estático y compilación
-- **tsx 4.20.6**: Ejecución rápida de TypeScript sin compilación previa
-- **Vitest 4.0.2**: Framework de testing moderno y rápido
-- **ES Modules**: Configuración moderna con import/export
-- **Node.js Types**: Soporte completo para APIs de Node.js
-
-### 📂 Estado Actual
-
-#### ✅ Completado:
-- **Health Check System**: Sistema trivial de verificación de salud
-- **Tooling Setup**: Configuración completa de desarrollo y testing
-- **Project Structure**: Estructura base organizada por capas
-- **Testing Framework**: Vitest configurado con cobertura completa
-
-#### 🔧 Health Check (`src/shared/health.ts`):
-```typescript
-// Interface para el estado de salud
-export interface HealthStatus {
-  status: 'healthy' | 'unhealthy';
-  timestamp: Date;
-  uptime: number;
-  service: string;
-}
-
-// Función principal de health check
-export function getHealthStatus(serviceName?: string): HealthStatus;
-
-// Verificación de disponibilidad del servicio
-export function isServiceReady(): boolean;
-```
-
-### 🧪 Testing TypeScript
-
-```bash
-# Ejecutar tests una vez
-cd typescript_version
-npm test
-
-# Ejecutar tests en modo watch (desarrollo)
-npm run test:watch
-
-# Ejecutar código directamente con tsx
-npm run dev
-
-# Compilar TypeScript a JavaScript
-npm run build
-
-# Ejecutar código compilado
-npm start
-```
-
-### 📋 Próximos Pasos (TypeScript):
-- [ ] **Value Objects**: Implementar DNI y User entity
-- [ ] **Domain Layer**: Entidades de dominio equivalentes a Python
-- [ ] **Use Cases**: Casos de uso CRUD con inyección de dependencias
-- [ ] **Repository Pattern**: Interfaces y implementaciones
-- [ ] **Infrastructure**: Adaptadores para persistencia
-- [ ] **Testing**: Cobertura completa por capas como en Python
-
-### 🎯 Objetivo de la Implementación TypeScript:
-Demostrar que **Clean Architecture es independiente del lenguaje** implementando exactamente la misma funcionalidad CRUD con la misma estructura de capas, pero aprovechando las ventajas específicas de TypeScript:
-- **Type Safety**: Prevención de errores en tiempo de compilación
-- **Interfaces explícitas**: Contratos claros entre capas
-- **Modern Tooling**: Desarrollo eficiente con hot reload y testing rápido
 
 ## 🧪 Testing
 
@@ -432,30 +349,6 @@ python -m unittest discover tests/ -v
 
 # Opción 4: Desarrollo con workflow automatizado (requiere Warp Drive)
 wf-dev-push-unitest  # Valida, testea, commitea y hace push automáticamente
-```
-
-### 🔷 TypeScript Version (EN DESARROLLO)
-```bash
-# Navegar al proyecto TypeScript
-cd typescript_version
-
-# Instalar dependencias (solo la primera vez)
-npm install
-
-# Ejecutar health check (verificar tooling)
-npm run dev
-
-# Ejecutar tests
-npm test
-
-# Ejecutar tests en modo watch (desarrollo)
-npm run test:watch
-
-# Compilar a JavaScript
-npm run build
-
-# Ejecutar código compilado
-npm start
 ```
 
 ### 🎯 Flujo de Desarrollo Recomendado
