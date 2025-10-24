@@ -44,7 +44,7 @@ Implementar el **mismo sistema de gestión de usuarios** en dos lenguajes difere
 CleanArchitecture/           # 🏗️ Raíz del proyecto
 ├── scripts/                 # 🛠️ Scripts de desarrollo y CI/CD
 │   └── dev.py              # Script inteligente para validación y tests
-├── python_version/          # 🐍 Implementación en Python (COMPLETA)
+├── python_version/          # 🐍 Implementación en Python
 │   ├── entities/           # 🎯 Entidades del negocio
 │   │   └── users.py        # Clase User con validaciones
 │   ├── use_cases/          # 💼 Casos de uso
@@ -77,7 +77,7 @@ CleanArchitecture/           # 🏗️ Raíz del proyecto
 └── .gitignore              # 🙈 Configuración Git
 ```
 
-## 🐍 Implementación en Python (COMPLETA)
+## 🐍 Implementación en Python
 
 ### 📁 Estructura Detallada
 
@@ -321,7 +321,7 @@ python main.py
 
 ## 📈 Progreso del Proyecto
 
-### 🐍 Python Implementation - ✅ COMPLETA
+### 🐍 Python Implementation - 🔧 FUNCIONAL (Con potencial de expansión)
 - [x] **Entities**: User con validación completa de DNI español
 - [x] **Use Cases CRUD Completo**: 
   - ✅ CreateUserUseCase con inyección de dependencias
@@ -364,6 +364,16 @@ python main.py
   - ✅ 10 tests unitarios con cobertura completa
   - ✅ Verificación de tooling y compilación
 
+### 📋 Próximos Pasos - Python
+- [ ] **Interactive CLI**: Menú interactivo para operaciones CRUD
+- [ ] **Controllers Layer**: Capa de presentación con interfaz de usuario
+- [ ] **Input Validation**: Validación mejorada de entrada de usuario
+- [ ] **Error Handling**: Manejo de errores más robusto en la interfaz
+- [ ] **Configuration**: Sistema de configuración (archivo, variables de entorno)
+- [ ] **Logging**: Sistema de logging para auditoría y debugging
+- [ ] **Database Integration**: Migrar de JSON a SQLite/PostgreSQL
+- [ ] **API REST**: Capa de API HTTP con Flask/FastAPI
+
 ### 📋 Próximos Pasos - TypeScript
 - [ ] **Value Objects**: Implementar DNI validation y User entity en TypeScript
 - [ ] **Domain Layer**: Entidades equivalentes con tipado estático
@@ -403,7 +413,7 @@ python main.py
 
 ## 🚀 Cómo ejecutar el proyecto
 
-### 🐍 Python Version (COMPLETA)
+### 🐍 Python Version (FUNCIONAL)
 ```bash
 # Clonar el repositorio
 git clone <tu-repo>
