@@ -2,10 +2,10 @@
 
 > Un proyecto educativo paso a paso para aprender Clean Architecture implementando:
 > - 🐍 **Sistema de gestión de usuarios** (Python - FUNCIONAL)
-> - 🛒 **Orders Microservice** (Python - EN DESARROLLO con Domain Layer completo)
+> - 🛒 **Orders Microservice** (Python - EN DESARROLLO con Domain + Application Layer completado)
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-22%2F22%20✅%20Passing-green.svg)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-32%2F32%20✅%20Passing-green.svg)](#testing)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean-brightgreen.svg)](#arquitectura)
 [![Microservices](https://img.shields.io/badge/Microservices-🛒%20Orders%20MS-orange.svg)](#orders-microservice)
 
@@ -77,20 +77,22 @@ CleanArchitecture/           # 🏗️ Raíz del proyecto
 │   │       ├── domain_event.py   # Base para eventos
 │   │       ├── order_created.py  # Evento orden creada
 │   │       └── item_added.py     # Evento item agregado
-│   ├── application/        # 💼 Capa de Aplicación (en desarrollo)
-│   │   ├── ports/         # 🔌 Interfaces/Contratos
-│   │   ├── dtos/          # 📋 Data Transfer Objects
-│   │   └── use_cases/     # 💼 Casos de uso
+│   ├── application/        # 💼 Capa de Aplicación (✅ COMPLETADO)
+│   │   ├── ports/         # 🔌 Interfaces/Contratos (3 puertos)
+│   │   ├── dtos/          # 📋 Data Transfer Objects (4 DTOs)
+│   │   └── use_cases/     # 💼 Casos de uso (2 implementados)
 │   ├── infrastructure/     # 🔧 Capa de Infraestructura (pendiente)
 │   ├── http/              # 🌐 Capa HTTP/API REST (pendiente)
 │   ├── config/            # ⚙️ Configuración
 │   │   ├── __init__.py    # Exportaciones de configuración
 │   │   └── logging_config.py # Sistema completo de logging
-│   ├── tests/             # 🧪 Tests unitarios completos
-│   │   └── domain/        # Tests de dominio (5/5 ✅)
-│   │       ├── entities/  # Tests de entidades
-│   │       ├── events/    # Tests de eventos
-│   │       └── value_objects/ # Tests de value objects
+│   ├── tests/             # 🧪 Tests unitarios completos (15/15 ✅)
+│   │   ├── domain/        # Tests de dominio (11/11 ✅)
+│   │   │   ├── entities/  # Tests de entidades
+│   │   │   ├── events/    # Tests de eventos
+│   │   │   └── value_objects/ # Tests de value objects
+│   │   └── application/   # Tests de aplicación (4/4 ✅)
+│   │       └── use_cases/ # Tests de casos de uso
 │   └── logs/              # 📝 Archivos de log (rotación automática)
 ├── README.md              # 📖 Documentación completa
 └── .gitignore             # 🙈 Configuración Git actualizada
@@ -413,35 +415,55 @@ python -m unittest discover tests/ -v
 wf-dev-push-unitest  # Valida, testea, commitea y hace push automáticamente
 ```
 
-### 🛒 Orders Microservice (EN DESARROLLO)
+### 🛒 Orders Microservice (DOMAIN + APPLICATION COMPLETADO ✅)
+
+**Estado actual**: Domain Layer + Application Layer implementados y testeados
+
+#### 🎯 Domain Layer (11 tests ✅)
+- **Entidades**: Order con agregado raíz 
+- **Value Objects**: OrderId, SKU, Quantity, Price
+- **Eventos**: OrderCreated, ItemAdded
+- **Tests**: 11/11 pasando
+
+#### 💼 Application Layer (4 tests ✅) 
+- **Puertos**: OrderRepository, PricingService, EventBus
+- **DTOs**: CreateOrderRequest/Response, AddItemToOrderRequest/Response  
+- **Casos de Uso**: CreateOrderUseCase, AddItemToOrderUseCase
+- **Tests**: 4/4 pesando con mocks
+
 ```bash
-# Ejecutar tests del dominio Orders MS individualmente
+# Ejecutar tests individuales de Orders MS
 cd orders_ms
+
+# Tests de dominio
 python -m tests.domain.entities.test_order
 python -m tests.domain.value_objects.test_price
 python -m tests.domain.value_objects.test_sku
-python -m tests.domain.value_objects.test_quantity
-python -m tests.domain.value_objects.test_order_id
+
+# Tests de aplicación (nuevos!)
+python -m tests.application.use_cases.test_create_order_use_case
+python -m tests.application.use_cases.test_add_item_to_order_use_case
 
 # Probar el sistema de logging
-cd orders_ms
 python -c "
-from config import setup_dev_logging, get_logger
+from config import setup_dev_logging
 from domain.entities.order import Order
 from domain.value_objects.order_id import OrderId
 from domain.value_objects.sku import SKU
 from domain.value_objects.quantity import Quantity
 from domain.value_objects.price import Price
 
-setup_dev_logging()
+setup_dev_logging()  
 order = Order.create(OrderId(), 'CUSTOMER123')
 order.add_item(SKU('LAPTOP001'), Quantity(2), Price(999.99, 'EUR'))
-print('✅ Dominio y logging funcionando')
+print('✅ Domain + Application funcionando')
 "
-
-# Ver logs generados
-cat orders_ms/logs/orders_ms_*.log
 ```
+
+#### 🔄 Próximos pasos:
+- **Infrastructure Layer**: InMemory repositories, static pricing
+- **HTTP Layer**: FastAPI endpoints  
+- **Composition Root**: Dependency injection container
 
 ### 🎯 Flujo de Desarrollo Recomendado
 
