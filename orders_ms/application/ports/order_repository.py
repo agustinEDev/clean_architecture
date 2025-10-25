@@ -2,8 +2,6 @@
 Order Repository Interface - Puerto para persistencia de pedidos
 """
 from abc import ABC, abstractmethod
-from typing import Optional
-from domain.value_objects.order_id import OrderId
 from domain.entities.order import Order
 
 class OrderRepository(ABC):
@@ -22,7 +20,7 @@ class OrderRepository(ABC):
         pass
 
     @abstractmethod
-    def get(self, order_id: OrderId) -> Optional['Order']:
+    def get(self, order_id: str) -> 'Order | None':
         """
         Recupera una orden por su ID.
         
@@ -32,20 +30,10 @@ class OrderRepository(ABC):
         pass
 
     @abstractmethod
-    def delete(self, order_id: OrderId) -> None:
+    def delete(self, order_id: str) -> None:
         """
         Elimina una orden por su ID.
         
         :param order_id: El ID de la orden a eliminar.
-        """
-        pass
-
-    @abstractmethod
-    def exists(self, order_id: OrderId) -> bool:
-        """
-        Verifica si una orden existe por su ID.
-        
-        :param order_id: El ID de la orden a verificar.
-        :return: True si la orden existe, False en caso contrario.
         """
         pass
