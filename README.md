@@ -1,106 +1,102 @@
 # 🏗️ Clean Architecture Learning Project
 
-> Un proyecto educativo paso a paso para aprender Clean Architecture implementando:
-> - 🐍 **Sistema de gestión de usuarios** (Python - FUNCIONAL)
-> - 🛒 **Orders Microservice** (Python - EN DESARROLLO con Domain + Application Layer completado)
+> Proyecto educativo para aprender Clean Architecture con **dos implementaciones completas**:
+> - 🐍 **Sistema de Usuarios** - CRUD completo con Clean Architecture
+> - 🛒 **Orders Microservice** - DDD + Event-Driven Architecture
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
 [![Tests](https://img.shields.io/badge/Tests-32%2F32%20✅%20Passing-green.svg)](#testing)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean-brightgreen.svg)](#arquitectura)
-[![Microservices](https://img.shields.io/badge/Microservices-🛒%20Orders%20MS-orange.svg)](#orders-microservice)
+[![DDD](https://img.shields.io/badge/DDD-Domain%20Driven%20Design-purple.svg)](#orders-microservice)
 
 ## 📚 ¿Qué es Clean Architecture?
 
-Clean Architecture es un patrón de diseño que separa el código en capas concéntricas, donde cada capa tiene una responsabilidad específica y las dependencias apuntan hacia el centro.
+Clean Architecture separa el código en **capas concéntricas** donde las dependencias apuntan hacia el centro, garantizando que la lógica de negocio sea independiente de frameworks y tecnologías externas.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    🌐 Frameworks & Drivers              │
+│            🌐 HTTP/API + Database + External            │
 │  ┌─────────────────────────────────────────────────┐    │
-│  │              🔌 Interface Adapters              │    │
+│  │          🔌 Controllers + Repositories          │    │
 │  │  ┌─────────────────────────────────────────┐    │    │
-│  │  │              💼 Use Cases               │    │    │
+│  │  │          💼 Use Cases + DTOs            │    │    │
 │  │  │  ┌─────────────────────────────────┐    │    │    │
-│  │  │  │          🎯 Entities            │    │    │    │
-│  │  │  │                                 │    │    │    │
+│  │  │  │      🎯 Domain Logic Core       │    │    │    │
 │  │  │  └─────────────────────────────────┘    │    │    │
 │  │  └─────────────────────────────────────────┘    │    │
 │  └─────────────────────────────────────────────────┘    │
 └─────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Objetivo del Proyecto
+## 🎯 Implementaciones del Proyecto
 
-Implementar un **sistema de gestión de usuarios** en Python para entender los principios de Clean Architecture y las **ventajas** que proporciona en el desarrollo de software.
+### 🐍 Sistema de Usuarios (FUNCIONAL ✅)
+**CRUD completo** para gestión de usuarios con Clean Architecture
 
-### ✨ Características del Sistema
+**Funcionalidades:**
 - ✅ Crear usuarios con validación de DNI español
-- ✅ Buscar usuarios por DNI
+- ✅ Buscar usuarios por DNI  
 - ✅ Listar todos los usuarios
 - ✅ Actualizar información de usuarios
 - ✅ Eliminar usuarios
+- ✅ **17 tests unitarios** + repositorio JSON
 
-##  Estructura del Proyecto
+### 🛒 Orders Microservice (DOMAIN + APPLICATION ✅)
+**Microservicio de pedidos** con DDD + Event-Driven Architecture
+
+**Implementado:**
+- ✅ **Domain Layer**: Value Objects, Entities, Domain Events
+- ✅ **Application Layer**: Use Cases, Ports, DTOs
+- ✅ **15 tests unitarios** con mocks + event-driven design
+- 🔄 **Pendiente**: Infrastructure + HTTP + Composition Root
+
+## 📁 Estructura del Proyecto
 
 ```
-CleanArchitecture/           # 🏗️ Raíz del proyecto
-├── scripts/                 # 🛠️ Scripts de desarrollo y CI/CD
-│   └── dev.py              # Script inteligente para validación y tests unificados
-├── python_version/          # 🐍 Implementación en Python (Sistema de Usuarios)
-│   ├── entities/           # 🎯 Entidades del negocio
-│   │   └── users.py        # Clase User con validaciones
-│   ├── use_cases/          # 💼 Casos de uso
-│   │   ├── user_repository_interface.py
-│   │   ├── create_user_use_case.py
-│   │   ├── find_user_use_case.py
-│   │   ├── list_users_use_case.py
-│   │   ├── update_user_use_case.py
-│   │   └── delete_user_use_case.py
-│   ├── adapters/           # 🔌 Adaptadores
-│   │   └── repositories/   # Acceso a datos
-│   │       └── file_user_repository.py
-│   ├── tests/              # 🧪 Tests completos por capa
-│   │   ├── test_entities/
-│   │   ├── test_use_cases/
-│   │   └── test_adapters/
-│   └── main.py             # Aplicación principal funcional
-├── orders_ms/              # 🛒 Orders Microservice (Clean Architecture)
-│   ├── domain/             # 🎯 Capa de Dominio
-│   │   ├── entities/       # 📦 Entidades del negocio
-│   │   │   └── order.py    # Order con factory methods y eventos
-│   │   ├── value_objects/  # 💎 Value Objects inmutables
-│   │   │   ├── price.py    # Price con Decimal y validación currency
-│   │   │   ├── sku.py      # SKU con normalización y validación
-│   │   │   ├── quantity.py # Quantity con rangos válidos
-│   │   │   └── order_id.py # OrderId con UUID y prefijo
-│   │   └── events/         # ⚡ Eventos de dominio
-│   │       ├── domain_event.py   # Base para eventos
-│   │       ├── order_created.py  # Evento orden creada
-│   │       └── item_added.py     # Evento item agregado
-│   ├── application/        # 💼 Capa de Aplicación (✅ COMPLETADO)
-│   │   ├── ports/         # 🔌 Interfaces/Contratos (3 puertos)
-│   │   ├── dtos/          # 📋 Data Transfer Objects (4 DTOs)
-│   │   └── use_cases/     # 💼 Casos de uso (2 implementados)
-│   ├── infrastructure/     # 🔧 Capa de Infraestructura (pendiente)
-│   ├── http/              # 🌐 Capa HTTP/API REST (pendiente)
-│   ├── config/            # ⚙️ Configuración
-│   │   ├── __init__.py    # Exportaciones de configuración
-│   │   └── logging_config.py # Sistema completo de logging
-│   ├── tests/             # 🧪 Tests unitarios completos (15/15 ✅)
-│   │   ├── domain/        # Tests de dominio (11/11 ✅)
-│   │   │   ├── entities/  # Tests de entidades
-│   │   │   ├── events/    # Tests de eventos
-│   │   │   └── value_objects/ # Tests de value objects
-│   │   └── application/   # Tests de aplicación (4/4 ✅)
-│   │       └── use_cases/ # Tests de casos de uso
-│   └── logs/              # 📝 Archivos de log (rotación automática)
-├── README.md              # 📖 Documentación completa
-└── .gitignore             # 🙈 Configuración Git actualizada
+CleanArchitecture/
+├── scripts/dev.py          # 🛠️ Script unificado (32/32 tests ✅)
+├── python_version/         # 🐍 Sistema de Usuarios (FUNCIONAL)
+│   ├── entities/          # 🎯 User con validación DNI español
+│   ├── use_cases/         # 💼 CRUD completo (5 casos de uso)
+│   ├── adapters/          # 🔌 FileUserRepository (JSON)
+│   ├── tests/             # 🧪 17 tests unitarios ✅
+│   └── main.py            # 🚀 Aplicación CLI funcional
+└── orders_ms/             # 🛒 Orders Microservice (DDD + Events)
+    ├── domain/            # 🎯 Value Objects + Entities + Events
+    ├── application/       # 💼 Use Cases + Ports + DTOs ✅
+    ├── tests/             # 🧪 15 tests unitarios ✅
+    ├── config/            # ⚙️ Sistema de logging profesional
+    └── logs/              # 📝 Rotación automática de logs
 ```
 
-## 🐍 Implementación en Python
+## � Cómo Usar el Proyecto
 
-### 📁 Estructura Detallada
+### 📋 Ejecución
+```bash
+# Validar estructura y ejecutar todos los tests
+python scripts/dev.py
+
+# Ejecutar solo Sistema de Usuarios
+cd python_version && python main.py
+
+# Ejecutar tests individuales por proyecto
+cd python_version && python -m unittest discover tests -v
+cd orders_ms && python -m tests.domain.entities.test_order
+```
+
+### 🎯 Funcionalidades Implementadas
+
+#### � Sistema de Usuarios
+- ✅ **CRUD completo**: Crear, buscar, listar, actualizar, eliminar
+- ✅ **Validación DNI español** con algoritmo real
+- ✅ **Persistencia JSON** con formato legible
+- ✅ **17 tests unitarios** con cobertura completa
+
+#### 🛒 Orders Microservice  
+- ✅ **Domain Layer**: Value Objects, Entities, Domain Events
+- ✅ **Application Layer**: Use Cases, Ports, DTOs
+- ✅ **Event-Driven**: OrderCreated, ItemAdded events
+- ✅ **15 tests unitarios** con mocks para application layer
 
 ```
 
@@ -269,88 +265,18 @@ python main.py
 - **Cobertura completa**: Casos válidos, inválidos y edge cases
 - **Testing por capas**: Cada capa se testea independientemente
 
-## 📈 Progreso del Proyecto
+## 📈 Estado del Proyecto
 
-### 🐍 Python Implementation - 🔧 FUNCIONAL (Con potencial de expansión)
-- [x] **Entities**: User con validación completa de DNI español
-- [x] **Use Cases CRUD Completo**: 
-  - ✅ CreateUserUseCase con inyección de dependencias
-  - ✅ FindUserUseCase para búsqueda por DNI
-  - ✅ ListUsersUseCase para listar todos los usuarios
-  - ✅ UpdateUserUseCase para modificar usuarios existentes
-  - ✅ DeleteUserUseCase para eliminar usuarios
-- [x] **Repository Interface**: Contrato bien definido y desacoplado
-- [x] **Adapters**: FileUserRepository con persistencia JSON formateada
-- [x] **Testing Completo**: 
-  - ✅ Tests unitarios para User (casos válidos/inválidos)
-  - ✅ Tests para todos los Use Cases con repositorio mock
-  - ✅ Tests de casos de éxito y manejo de errores
-  - ✅ Tests de integración para FileUserRepository
-  - ✅ Tests de persistencia real en archivos
-  - ✅ Cobertura completa de operaciones CRUD
-- [x] **Aplicación Principal**: Main.py con funcionalidad CRUD completa
-- [x] **Mejoras de Calidad**: 
-  - ✅ JSON formateado con indentación y caracteres especiales
-  - ✅ Manejo consistente de errores
-  - ✅ Arquitectura limpia y código mantenible
-- [x] **Sistema de Desarrollo y CI/CD**:
-  - ✅ Script de desarrollo inteligente (scripts/dev.py)
-  - ✅ Validación automática de estructura del proyecto
-  - ✅ Ejecución automatizada de tests desde cualquier ubicación
-  - ✅ Integración con workflows de automatización (Warp Drive)
-  - ✅ Detección de cambios en todo el repositorio
-  - ✅ Exit codes apropiados para CI/CD
+### ✅ Completado
+- 🐍 **Sistema de Usuarios**: CRUD completo funcional (17 tests ✅)
+- 🛒 **Orders MS - Domain Layer**: Value Objects + Entities + Events (11 tests ✅)  
+- 🛒 **Orders MS - Application Layer**: Use Cases + Ports + DTOs (4 tests ✅)
+- 🛠️ **Dev Tools**: Script unificado de tests y validación
 
-### 🛒 Orders Microservice - ✅ DOMAIN + APPLICATION COMPLETADO
-- [x] **Domain Layer (COMPLETO)**: Lógica de negocio con eventos
-  - ✅ **Value Objects**: Price, SKU, Quantity, OrderId con validaciones completas
-  - ✅ **Entities**: Order con factory methods y gestión de items
-  - ✅ **Domain Events**: OrderCreated, ItemAdded con DomainEvent base
-  - ✅ **Event-Driven Architecture**: Eventos de dominio para comunicación entre capas
-  - ✅ **Tests de dominio**: 11/11 tests pasando
-- [x] **Application Layer (COMPLETO)**: Casos de uso y contratos
-  - ✅ **Use Cases**: CreateOrderUseCase y AddItemToOrderUseCase implementados
-  - ✅ **Puertos**: OrderRepository, PricingService, EventBus interfaces definidos
-  - ✅ **DTOs**: CreateOrder y AddItemToOrder Request/Response DTOs
-  - ✅ **Dependency Injection**: Inyección de dependencias en constructores
-  - ✅ **Tests de aplicación**: 4/4 tests con mocks pasando
-- [x] **Testing System (COMPLETO)**: Cobertura completa por capas
-  - ✅ 15 tests unitarios Orders MS (11 domain + 4 application)
-  - ✅ Importaciones limpias con módulos Python (__init__.py)
-  - ✅ Script dev.py unificado (32/32 tests: Python + Orders MS)
-  - ✅ Ejecución con python -m desde raíz del proyecto
-- [x] **Logging System (COMPLETO)**: Sistema profesional de trazabilidad
-  - ✅ Configuración por niveles (DEBUG, INFO, WARNING, ERROR)
-  - ✅ Logging a consola y archivos con rotación automática
-  - ✅ Separación por capas (domain, application, infrastructure)
-  - ✅ Integración en entidades de dominio para trazabilidad completa
-- [x] **Project Structure (COMPLETO)**: Arquitectura limpia y modular
-  - ✅ Separación estricta por capas (domain/, application/, infrastructure/, http/)
-  - ✅ Módulos Python con __init__.py para importaciones limpias
-  - ✅ Configuración centralizada (config/) con logging_config.py
-  - ✅ Sistema de logs (logs/) con .gitignore configurado
-
-- [ ] **Infrastructure Layer**: Adaptadores e implementaciones
-  - 🔄 InMemoryOrderRepository para persistencia
-  - 🔄 StaticPricingService para precios
-  - 🔄 NoOpEventBus para eventos
-- [ ] **HTTP Layer**: API REST con FastAPI
-  - 🔄 POST /orders - Crear nueva orden
-  - 🔄 POST /orders/{orderId}/items - Agregar item a orden
-- [ ] **Composition Root**: Inyección de dependencias
-  - 🔄 container.py para composición de objetos
-  - 🔄 Configuración de dependencias
-
-###  Próximos Pasos - Python Version
-- [ ] **Interactive CLI**: Menú interactivo para operaciones CRUD
-- [ ] **Controllers Layer**: Capa de presentación con interfaz de usuario
-- [ ] **Input Validation**: Validación mejorada de entrada de usuario
-- [ ] **Error Handling**: Manejo de errores más robusto en la interfaz
-- [ ] **Configuration**: Sistema de configuración (archivo, variables de entorno)
-- [ ] **Database Integration**: Migrar de JSON a SQLite/PostgreSQL
-- [ ] **API REST**: Capa de API HTTP con Flask/FastAPI
-
-### 📋 Próximos Pasos - Orders Microservice
+### 🔄 Próximos Pasos
+- 🛒 **Orders MS - Infrastructure Layer**: InMemory repositories + static pricing
+- � **Orders MS - HTTP Layer**: FastAPI endpoints + REST API
+- � **Orders MS - Composition Root**: Dependency injection container
 - [ ] **Infrastructure Layer**: Implementar adaptadores
   - [ ] InMemoryOrderRepository para persistencia en memoria
   - [ ] StaticPricingService con precios fijos
