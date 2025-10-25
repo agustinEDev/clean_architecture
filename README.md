@@ -1,10 +1,13 @@
 # 🏗️ Clean Architecture Learning Project
 
-> Un proyecto educativo paso a paso para aprender Clean Architecture implementando un sistema de gestión de usuarios en Python.
+> Un proyecto educativo paso a paso para aprender Clean Architecture implementando:
+> - 🐍 **Sistema de gestión de usuarios** (Python - FUNCIONAL)
+> - 🛒 **Orders Microservice** (Python - EN DESARROLLO con Domain Layer completo)
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-✅%20Passing-green.svg)](#testing)
+[![Tests](https://img.shields.io/badge/Tests-22%2F22%20✅%20Passing-green.svg)](#testing)
 [![Clean Architecture](https://img.shields.io/badge/Architecture-Clean-brightgreen.svg)](#arquitectura)
+[![Microservices](https://img.shields.io/badge/Microservices-🛒%20Orders%20MS-orange.svg)](#orders-microservice)
 
 ## 📚 ¿Qué es Clean Architecture?
 
@@ -42,8 +45,8 @@ Implementar un **sistema de gestión de usuarios** en Python para entender los p
 ```
 CleanArchitecture/           # 🏗️ Raíz del proyecto
 ├── scripts/                 # 🛠️ Scripts de desarrollo y CI/CD
-│   └── dev.py              # Script inteligente para validación y tests
-├── python_version/          # 🐍 Implementación en Python
+│   └── dev.py              # Script inteligente para validación y tests unificados
+├── python_version/          # 🐍 Implementación en Python (Sistema de Usuarios)
 │   ├── entities/           # 🎯 Entidades del negocio
 │   │   └── users.py        # Clase User con validaciones
 │   ├── use_cases/          # 💼 Casos de uso
@@ -61,8 +64,36 @@ CleanArchitecture/           # 🏗️ Raíz del proyecto
 │   │   ├── test_use_cases/
 │   │   └── test_adapters/
 │   └── main.py             # Aplicación principal funcional
-├── README.md               # 📖 Documentación completa
-└── .gitignore              # 🙈 Configuración Git
+├── orders_ms/              # 🛒 Orders Microservice (Clean Architecture)
+│   ├── domain/             # 🎯 Capa de Dominio
+│   │   ├── entities/       # 📦 Entidades del negocio
+│   │   │   └── order.py    # Order con factory methods y eventos
+│   │   ├── value_objects/  # 💎 Value Objects inmutables
+│   │   │   ├── price.py    # Price con Decimal y validación currency
+│   │   │   ├── sku.py      # SKU con normalización y validación
+│   │   │   ├── quantity.py # Quantity con rangos válidos
+│   │   │   └── order_id.py # OrderId con UUID y prefijo
+│   │   └── events/         # ⚡ Eventos de dominio
+│   │       ├── domain_event.py   # Base para eventos
+│   │       ├── order_created.py  # Evento orden creada
+│   │       └── item_added.py     # Evento item agregado
+│   ├── application/        # 💼 Capa de Aplicación (en desarrollo)
+│   │   ├── ports/         # 🔌 Interfaces/Contratos
+│   │   ├── dtos/          # 📋 Data Transfer Objects
+│   │   └── use_cases/     # 💼 Casos de uso
+│   ├── infrastructure/     # 🔧 Capa de Infraestructura (pendiente)
+│   ├── http/              # 🌐 Capa HTTP/API REST (pendiente)
+│   ├── config/            # ⚙️ Configuración
+│   │   ├── __init__.py    # Exportaciones de configuración
+│   │   └── logging_config.py # Sistema completo de logging
+│   ├── tests/             # 🧪 Tests unitarios completos
+│   │   └── domain/        # Tests de dominio (5/5 ✅)
+│   │       ├── entities/  # Tests de entidades
+│   │       ├── events/    # Tests de eventos
+│   │       └── value_objects/ # Tests de value objects
+│   └── logs/              # 📝 Archivos de log (rotación automática)
+├── README.md              # 📖 Documentación completa
+└── .gitignore             # 🙈 Configuración Git actualizada
 ```
 
 ## 🐍 Implementación en Python
@@ -268,43 +299,74 @@ python main.py
   - ✅ Detección de cambios en todo el repositorio
   - ✅ Exit codes apropiados para CI/CD
 
-### 🔷 TypeScript Implementation - 🚧 EN DESARROLLO
-- [x] **Project Setup**: Configuración completa de desarrollo
-  - ✅ TypeScript 5.9.3 + tsx 4.20.6 para ejecución rápida
-  - ✅ Vitest 4.0.2 para testing moderno
-  - ✅ ES Modules con import/export
-  - ✅ Configuración tsconfig.json optimizada
-  - ✅ Scripts de desarrollo (dev, build, test, test:watch)
-- [x] **Health Check System**: Sistema de verificación trivial
-  - ✅ Interface HealthStatus con tipos estrictos
-  - ✅ Funciones getHealthStatus() e isServiceReady()
-  - ✅ 10 tests unitarios con cobertura completa
-  - ✅ Verificación de tooling y compilación
+### � Orders Microservice - 🚧 EN DESARROLLO ACTIVO
+- [x] **Domain Layer (COMPLETO)**: Lógica de negocio con eventos
+  - ✅ **Value Objects**: Price, SKU, Quantity, OrderId con validaciones completas
+  - ✅ **Entities**: Order con factory methods y gestión de items
+  - ✅ **Domain Events**: OrderCreated, ItemAdded con DomainEvent base
+  - ✅ **Event-Driven Architecture**: Eventos de dominio para comunicación entre capas
+- [x] **Testing System (COMPLETO)**: Tests unitarios por componente
+  - ✅ 5 tests unitarios con cobertura completa del dominio
+  - ✅ Importaciones limpias con módulos Python (__init__.py)
+  - ✅ Script dev.py unificado (22/22 tests: Python + Orders MS)
+  - ✅ Ejecución con python -m desde raíz del proyecto
+- [x] **Logging System (COMPLETO)**: Sistema profesional de trazabilidad
+  - ✅ Configuración por niveles (DEBUG, INFO, WARNING, ERROR)
+  - ✅ Logging a consola y archivos con rotación automática
+  - ✅ Separación por capas (domain, application, infrastructure)
+  - ✅ Integración en entidades de dominio para trazabilidad completa
+- [x] **Project Structure (COMPLETO)**: Arquitectura limpia y modular
+  - ✅ Separación estricta por capas (domain/, application/, infrastructure/, http/)
+  - ✅ Módulos Python con __init__.py para importaciones limpias
+  - ✅ Configuración centralizada (config/) con logging_config.py
+  - ✅ Sistema de logs (logs/) con .gitignore configurado
+- [ ] **Application Layer**: Casos de uso y puertos
+  - 🔄 CreateOrderUseCase y AddItemToOrderUseCase
+  - 🔄 Puertos: OrderRepository, PricingService, EventBus
+  - 🔄 DTOs: CreateOrderRequest/Response, AddItemToOrderRequest/Response
+- [ ] **Infrastructure Layer**: Adaptadores e implementaciones
+  - 🔄 InMemoryOrderRepository para persistencia
+  - 🔄 StaticPricingService para precios
+  - 🔄 NoOpEventBus para eventos
+- [ ] **HTTP Layer**: API REST con FastAPI
+  - 🔄 POST /orders - Crear nueva orden
+  - 🔄 POST /orders/{orderId}/items - Agregar item a orden
+- [ ] **Composition Root**: Inyección de dependencias
+  - 🔄 container.py para composición de objetos
+  - 🔄 Configuración de dependencias
 
-### 📋 Próximos Pasos - Python
+###  Próximos Pasos - Python Version
 - [ ] **Interactive CLI**: Menú interactivo para operaciones CRUD
 - [ ] **Controllers Layer**: Capa de presentación con interfaz de usuario
 - [ ] **Input Validation**: Validación mejorada de entrada de usuario
 - [ ] **Error Handling**: Manejo de errores más robusto en la interfaz
 - [ ] **Configuration**: Sistema de configuración (archivo, variables de entorno)
-- [ ] **Logging**: Sistema de logging para auditoría y debugging
 - [ ] **Database Integration**: Migrar de JSON a SQLite/PostgreSQL
 - [ ] **API REST**: Capa de API HTTP con Flask/FastAPI
 
-### 📋 Próximos Pasos - TypeScript
-- [ ] **Value Objects**: Implementar DNI validation y User entity en TypeScript
-- [ ] **Domain Layer**: Entidades equivalentes con tipado estático
-- [ ] **Use Cases**: Casos de uso CRUD con interfaces TypeScript
-- [ ] **Repository Pattern**: Contratos e implementaciones tipadas
-- [ ] **Infrastructure**: Adaptadores de persistencia
-- [ ] **Testing**: Cobertura completa por capas
-- [ ] **Main Application**: Aplicación funcional equivalente a Python
+### 📋 Próximos Pasos - Orders Microservice
+- [ ] **Application Layer**: Completar capa de aplicación
+  - [ ] CreateOrderUseCase y AddItemToOrderUseCase
+  - [ ] Puertos: OrderRepository, PricingService, EventBus interfaces
+  - [ ] DTOs para requests y responses
+- [ ] **Infrastructure Layer**: Implementar adaptadores
+  - [ ] InMemoryOrderRepository para persistencia en memoria
+  - [ ] StaticPricingService con precios fijos
+  - [ ] NoOpEventBus para eventos (stub inicial)
+- [ ] **HTTP Layer**: API REST con FastAPI
+  - [ ] POST /orders endpoint para crear órdenes
+  - [ ] POST /orders/{orderId}/items para agregar items
+  - [ ] Validación de requests y manejo de errores HTTP
+- [ ] **Integration**: Composición e inyección de dependencias
+  - [ ] container.py para dependency injection
+  - [ ] Configuración de entorno (dev/prod)
+  - [ ] Tests de integración end-to-end
 
-### 📋 Mejoras Futuras (Ambas Implementaciones)
+### 📋 Mejoras Futuras
 - [ ] **Controllers**: Capa de presentación (CLI interactiva/Web)
 - [ ] **External**: Base de datos real (SQLite/PostgreSQL)
-- [ ] **Comparación entre lenguajes**: Análisis detallado de diferencias y similitudes
-- [ ] **Performance Benchmarks**: Comparativa de rendimiento
+- [ ] **Performance Monitoring**: Métricas y monitoring del microservicio
+- [ ] **API Documentation**: OpenAPI/Swagger para endpoints REST
 - [ ] **Documentación avanzada**: Patrones aprendidos y mejores prácticas
 
 ## 🎓 Conceptos Aprendidos
@@ -336,19 +398,49 @@ python main.py
 git clone <tu-repo>
 cd CleanArchitecture
 
-# Opción 1: Validación completa + tests (RECOMENDADO)
-python scripts/dev.py
+# Opción 1: Validación completa + tests TODOS LOS PROYECTOS (RECOMENDADO)
+python scripts/dev.py  # Ejecuta Python Version (17 tests) + Orders MS (5 tests)
 
-# Opción 2: Solo ejecutar la aplicación CRUD
+# Opción 2: Solo ejecutar la aplicación CRUD de usuarios
 cd python_version
 python main.py
 
-# Opción 3: Solo ejecutar tests
+# Opción 3: Solo ejecutar tests de Python Version
 cd python_version
 python -m unittest discover tests/ -v
 
 # Opción 4: Desarrollo con workflow automatizado (requiere Warp Drive)
 wf-dev-push-unitest  # Valida, testea, commitea y hace push automáticamente
+```
+
+### 🛒 Orders Microservice (EN DESARROLLO)
+```bash
+# Ejecutar tests del dominio Orders MS individualmente
+cd orders_ms
+python -m tests.domain.entities.test_order
+python -m tests.domain.value_objects.test_price
+python -m tests.domain.value_objects.test_sku
+python -m tests.domain.value_objects.test_quantity
+python -m tests.domain.value_objects.test_order_id
+
+# Probar el sistema de logging
+cd orders_ms
+python -c "
+from config import setup_dev_logging, get_logger
+from domain.entities.order import Order
+from domain.value_objects.order_id import OrderId
+from domain.value_objects.sku import SKU
+from domain.value_objects.quantity import Quantity
+from domain.value_objects.price import Price
+
+setup_dev_logging()
+order = Order.create(OrderId(), 'CUSTOMER123')
+order.add_item(SKU('LAPTOP001'), Quantity(2), Price(999.99, 'EUR'))
+print('✅ Dominio y logging funcionando')
+"
+
+# Ver logs generados
+cat orders_ms/logs/orders_ms_*.log
 ```
 
 ### 🎯 Flujo de Desarrollo Recomendado
