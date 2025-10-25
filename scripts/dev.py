@@ -381,7 +381,10 @@ def main():
             print("   💎 4 Value Objects implementados y validados")
             print("   📦 1 Entidad (Order) con eventos de dominio")
             print("   ⚡ 3 Eventos de dominio implementados")
-            print("   💼 1 Caso de Uso (CreateOrder) implementado y testeado")
+            print("   💼 2 Casos de Uso (CreateOrder + AddItemToOrder) implementados")
+            print("   🔌 3 Puertos/Interfaces (Repository, PricingService, EventBus)")
+            print("   📋 4 DTOs (Request/Response para ambos casos de uso)")
+            print("   ✅ Domain + Application Layer completados")
         else:
             total_orders_tests = orders_passed_count + orders_failed_count
             print(f"   ❌ Algunos tests fallaron ({orders_passed_count}/{total_orders_tests}) - revisar output anterior")
@@ -399,7 +402,7 @@ def main():
         print("🎉 RESULTADO: ¡Ambos proyectos completos y tests pasando!")
         print(f"📊 TOTALES: {total_tests}/{total_tests} tests pasaron")
         print("🚀 Estado: Listo para commit y push")
-        print("🎯 Próximo paso: Implementar capa de aplicación en Orders MS")
+        print("🎯 Próximo paso: Implementar capa de infraestructura en Orders MS")
         sys.exit(0)
     else:
         print("🔧 RESULTADO: Revisar errores antes de continuar")

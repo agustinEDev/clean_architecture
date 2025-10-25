@@ -301,16 +301,23 @@ python main.py
   - ✅ Detección de cambios en todo el repositorio
   - ✅ Exit codes apropiados para CI/CD
 
-### � Orders Microservice - 🚧 EN DESARROLLO ACTIVO
+### 🛒 Orders Microservice - ✅ DOMAIN + APPLICATION COMPLETADO
 - [x] **Domain Layer (COMPLETO)**: Lógica de negocio con eventos
   - ✅ **Value Objects**: Price, SKU, Quantity, OrderId con validaciones completas
   - ✅ **Entities**: Order con factory methods y gestión de items
   - ✅ **Domain Events**: OrderCreated, ItemAdded con DomainEvent base
   - ✅ **Event-Driven Architecture**: Eventos de dominio para comunicación entre capas
-- [x] **Testing System (COMPLETO)**: Tests unitarios por componente
-  - ✅ 5 tests unitarios con cobertura completa del dominio
+  - ✅ **Tests de dominio**: 11/11 tests pasando
+- [x] **Application Layer (COMPLETO)**: Casos de uso y contratos
+  - ✅ **Use Cases**: CreateOrderUseCase y AddItemToOrderUseCase implementados
+  - ✅ **Puertos**: OrderRepository, PricingService, EventBus interfaces definidos
+  - ✅ **DTOs**: CreateOrder y AddItemToOrder Request/Response DTOs
+  - ✅ **Dependency Injection**: Inyección de dependencias en constructores
+  - ✅ **Tests de aplicación**: 4/4 tests con mocks pasando
+- [x] **Testing System (COMPLETO)**: Cobertura completa por capas
+  - ✅ 15 tests unitarios Orders MS (11 domain + 4 application)
   - ✅ Importaciones limpias con módulos Python (__init__.py)
-  - ✅ Script dev.py unificado (22/22 tests: Python + Orders MS)
+  - ✅ Script dev.py unificado (32/32 tests: Python + Orders MS)
   - ✅ Ejecución con python -m desde raíz del proyecto
 - [x] **Logging System (COMPLETO)**: Sistema profesional de trazabilidad
   - ✅ Configuración por niveles (DEBUG, INFO, WARNING, ERROR)
@@ -322,10 +329,7 @@ python main.py
   - ✅ Módulos Python con __init__.py para importaciones limpias
   - ✅ Configuración centralizada (config/) con logging_config.py
   - ✅ Sistema de logs (logs/) con .gitignore configurado
-- [ ] **Application Layer**: Casos de uso y puertos
-  - 🔄 CreateOrderUseCase y AddItemToOrderUseCase
-  - 🔄 Puertos: OrderRepository, PricingService, EventBus
-  - 🔄 DTOs: CreateOrderRequest/Response, AddItemToOrderRequest/Response
+
 - [ ] **Infrastructure Layer**: Adaptadores e implementaciones
   - 🔄 InMemoryOrderRepository para persistencia
   - 🔄 StaticPricingService para precios
@@ -347,10 +351,6 @@ python main.py
 - [ ] **API REST**: Capa de API HTTP con Flask/FastAPI
 
 ### 📋 Próximos Pasos - Orders Microservice
-- [ ] **Application Layer**: Completar capa de aplicación
-  - [ ] CreateOrderUseCase y AddItemToOrderUseCase
-  - [ ] Puertos: OrderRepository, PricingService, EventBus interfaces
-  - [ ] DTOs para requests y responses
 - [ ] **Infrastructure Layer**: Implementar adaptadores
   - [ ] InMemoryOrderRepository para persistencia en memoria
   - [ ] StaticPricingService con precios fijos
