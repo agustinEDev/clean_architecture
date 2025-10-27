@@ -20,7 +20,7 @@ class AddItemToOrderUseCase:
         sku = SKU(add_item_request_dto.sku)
         quantity = Quantity(add_item_request_dto.quantity)
 
-        order = self.order_repository.get(order_id)
+        order = self.order_repository.get(order_id.code)
         if not order:
             return AddItemToOrderResponseDTO(success=False)
 
