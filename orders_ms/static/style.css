@@ -1,0 +1,523 @@
+/* Estilos para Orders Microservice Frontend - Diseño Elegante B&N */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #fafafa;
+    min-height: 100vh;
+    padding: 40px 20px;
+    color: #1a1a1a;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 60px;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2.8rem;
+    font-weight: 300;
+    margin-bottom: 12px;
+    color: #1a1a1a;
+    letter-spacing: -0.02em;
+}
+
+header p {
+    font-size: 1.1rem;
+    color: #666;
+    font-weight: 400;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+}
+
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 32px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+/* Card que contiene resumen expandido */
+.card.has-summary {
+    grid-column: 1 / -1; /* Ocupa todo el ancho disponible */
+}
+
+.card:hover {
+    border-color: #1a1a1a;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 {
+    color: #1a1a1a;
+    margin-bottom: 24px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 12px;
+    letter-spacing: -0.01em;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #1a1a1a;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+    background: #ffffff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #1a1a1a;
+    box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.05);
+}
+
+.btn {
+    padding: 14px 28px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.01em;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary {
+    background: #1a1a1a;
+    color: white;
+    border-color: #1a1a1a;
+}
+
+.btn-primary:hover {
+    background: #333;
+    border-color: #333;
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #1a1a1a;
+    border-color: #d1d5db;
+}
+
+.btn-secondary:hover {
+    background: #f9fafb;
+    border-color: #1a1a1a;
+}
+
+.btn-info {
+    background: transparent;
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.btn-info:hover {
+    background: #1a1a1a;
+    color: white;
+}
+
+.btn-small {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 6px;
+    font-weight: 400;
+    font-size: 14px;
+    border: 1px solid transparent;
+}
+
+.result.success {
+    background: #f0fdf4;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.result.error {
+    background: #fef2f2;
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.result.summary {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.history {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 0;
+    background: #ffffff;
+    margin-bottom: 20px;
+}
+
+.history-item {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.2s ease;
+}
+
+.history-item:last-child {
+    border-bottom: none;
+}
+
+.history-item:hover {
+    background: #fafafa;
+}
+
+.history-item .timestamp {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.history-item .action {
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.history-item .details {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+.order-summary {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+/* Cuando el resumen está en el resultado, usar todo el ancho */
+.result .order-summary {
+    width: 100%;
+    max-width: none;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.order-header h3 {
+    font-size: 1.1rem; /* Reducido para un look más elegante */
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 2px;
+    letter-spacing: -0.01em;
+}
+
+.order-header p {
+    font-size: 0.85rem; /* Ajuste fino */
+    color: #6b7280;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 0;
+}
+
+.order-total {
+    font-size: 1.2rem; /* Reducido para mayor elegancia */
+    font-weight: 600;
+    color: #1a1a1a;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.items-list h4 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+}
+
+/* Contenedor de items en grid horizontal */
+.items-grid {
+    display: flex; /* Cambiamos a flexbox para centrar */
+    flex-wrap: wrap; /* Permitimos que los items pasen a la siguiente línea */
+    justify-content: center; /* Centramos los items horizontalmente */
+    gap: 12px; /* Aumentamos un poco el espacio para mejor legibilidad */
+    margin-bottom: 8px;
+    max-width: 100%;
+    padding: 8px 0; /* Añadimos un poco de padding vertical */
+}
+
+/* Para pantallas pequeñas */
+@media (max-width: 767px) {
+}
+
+/* Para pantallas medianas */
+@media (min-width: 768px) and (max-width: 1023px) {
+}
+
+/* Para pantallas grandes */
+@media (min-width: 1024px) {
+    .items-grid {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+    }
+}
+
+.item-row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #e5e5e5;
+    transition: all 0.2s ease;
+    min-height: 60px;
+    width: 160px; /* Ancho fijo para cada tarjeta de item */
+    position: relative;
+    margin: 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.item-row:hover {
+    background: #f8f9fa;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.item-info {
+    flex: 1;
+    min-width: 0; /* Para permitir text-overflow */
+    margin-bottom: 2px;
+}
+
+.item-name {
+    font-weight: 500; /* Ligeramente más fino */
+    color: #1a1a1a;
+    font-size: 14px; /* Más legible */
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.item-details {
+    font-size: 11px; /* Aumentado para legibilidad */
+    color: #6b7280;
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+    margin-bottom: 4px;
+}
+
+.item-price {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 12px; /* Aumentado para legibilidad */
+    font-family: 'JetBrains Mono', monospace;
+    text-align: center;
+    background: #f1f5f9;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin: 0;
+    border: 1px solid #e2e8f0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    body {
+        padding: 20px 16px;
+    }
+    
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    header {
+        margin-bottom: 40px;
+        padding-bottom: 30px;
+    }
+    
+    header h1 {
+        font-size: 2.2rem;
+    }
+    
+    .card {
+        padding: 24px;
+    }
+    
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .item-row {
+        padding: 10px 12px;
+        min-height: 65px;
+    }
+    
+    .item-name {
+        font-size: 14px;
+    }
+    
+    .item-details {
+        font-size: 11px;
+    }
+    
+    .item-price {
+        font-size: 12px;
+        padding: 4px 10px;
+    }
+}
+
+/* Estilos para lista de órdenes */
+.orders-list {
+    margin-top: 20px;
+}
+
+.order-item {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px; /* Bordes más sutiles */
+    padding: 16px; /* Padding reducido */
+    margin-bottom: 12px; /* Menos espacio entre tarjetas */
+    transition: all 0.2s ease;
+}
+
+.order-item:hover {
+    border-color: #1a1a1a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.order-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alineación superior */
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: #333; /* Color suavizado */
+    font-size: 0.9rem; /* Tamaño reducido */
+}
+
+.order-customer {
+    color: #6b7280;
+    font-size: 0.85rem; /* Ligeramente más pequeño */
+}
+
+.order-stats {
+    display: flex;
+    gap: 16px; /* Espacio reducido */
+    color: #6b7280;
+    font-size: 0.85rem; /* Tamaño unificado */
+}
+
+.order-stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.order-total {
+    font-weight: 600;
+    color: #1f2937; /* Color suavizado */
+}
+
+.no-orders {
+    text-align: center;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 40px 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Scrollbar personalizada */
+.history::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history::-webkit-scrollbar-track {
+    background: #f5f5f5;
+}
+
+.history::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.history::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}

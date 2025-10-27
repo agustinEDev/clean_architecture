@@ -53,5 +53,38 @@ class TestInMemoryOrderRepository(unittest.TestCase):
         # 4. Verificar que ya no se puede recuperar
         self.assertIsNone(self.repository.get(order_code))
 
+    def test_get_all_orders_empty(self):
+        """Test: Obtener todas las órdenes cuando el repositorio está vacío"""
+        # 1. Obtener todas las órdenes de un repositorio vacío
+        orders = self.repository.get_all()
+        
+        # 2. Verificar que retorna una lista vacía
+        self.assertEqual(len(orders), 0)
+        self.assertIsInstance(orders, list)
+
+    def test_get_all_orders_with_data(self):
+        """Test: Obtener todas las órdenes cuando hay datos"""
+        # 1. Crear y guardar múltiples órdenes
+        order1 = Order.create(OrderId("ORDER-001"), "customer-1")
+        order2 = Order.create(OrderId("ORDER-002"), "customer-2")
+        order3 = Order.create(OrderId("ORDER-003"), "customer-3")
+        
+        self.repository.save(order1)
+        self.repository.save(order2)
+        self.repository.save(order3)
+        
+        # 2. Obtener todas las órdenes
+        orders = self.repository.get_all()
+        
+        # 3. Verificar que retorna todas las órdenes
+        self.assertEqual(len(orders), 3)
+        self.assertIsInstance(orders, list)
+        
+        # 4. Verificar que contiene las órdenes correctas
+        order_codes = [order.order_id.code for order in orders]
+        self.assertIn("ORDER-001", order_codes)
+        self.assertIn("ORDER-002", order_codes)
+        self.assertIn("ORDER-003", order_codes)
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

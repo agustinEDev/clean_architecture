@@ -20,12 +20,18 @@ class AddItemToOrderUseCase:
         sku = SKU(add_item_request_dto.sku)
         quantity = Quantity(add_item_request_dto.quantity)
 
+        print(f"🔍 USE CASE DEBUG: Buscando orden con ID: {order_id.code}")
         order = self.order_repository.get(order_id.code)
         if not order:
+            print(f"❌ USE CASE DEBUG: Orden no encontrada: {order_id.code}")
             return AddItemToOrderResponseDTO(success=False)
+        print(f"✅ USE CASE DEBUG: Orden encontrada: {order_id.code}")
 
+        print(f"🔍 USE CASE DEBUG: Verificando si producto existe: {sku.code}")
         if not self.pricing_service.product_exists(sku):
+            print(f"❌ USE CASE DEBUG: Producto no existe: {sku.code}")
             return AddItemToOrderResponseDTO(success=False)
+        print(f"✅ USE CASE DEBUG: Producto existe: {sku.code}")
 
         price = self.pricing_service.get_price(sku)
         order.add_item(sku, quantity, price)

@@ -5,6 +5,8 @@ import unittest
 from container import Container
 from application.use_cases.create_order_use_case import CreateOrderUseCase
 from application.use_cases.add_item_to_order_use_case import AddItemToOrderUseCase
+from application.use_cases.get_order_use_case import GetOrderUseCase
+from application.use_cases.list_orders_use_case import ListOrdersUseCase
 from infrastructure.repositories.in_memory_order_repository import InMemoryOrderRepository
 from infrastructure.services.static_pricing_service import StaticPricingService
 from infrastructure.events.in_memory_event_bus import InMemoryEventBus
@@ -26,6 +28,8 @@ class TestContainer(unittest.TestCase):
         """Test: Container crea correctamente los casos de uso"""
         self.assertIsInstance(self.container.create_order_use_case(), CreateOrderUseCase)
         self.assertIsInstance(self.container.add_item_use_case(), AddItemToOrderUseCase)
+        self.assertIsInstance(self.container.get_order_use_case(), GetOrderUseCase)
+        self.assertIsInstance(self.container.list_orders_use_case(), ListOrdersUseCase)
     
     def test_use_cases_share_same_dependencies(self):
         """Test: Los casos de uso comparten las mismas instancias de dependencias"""

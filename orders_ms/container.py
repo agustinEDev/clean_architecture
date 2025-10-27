@@ -6,6 +6,8 @@ from infrastructure.services.static_pricing_service import StaticPricingService
 from infrastructure.events.in_memory_event_bus import InMemoryEventBus
 from application.use_cases.create_order_use_case import CreateOrderUseCase
 from application.use_cases.add_item_to_order_use_case import AddItemToOrderUseCase
+from application.use_cases.get_order_use_case import GetOrderUseCase
+from application.use_cases.list_orders_use_case import ListOrdersUseCase
 
 class Container:
     """
@@ -26,6 +28,14 @@ class Container:
     def add_item_use_case(self) -> AddItemToOrderUseCase:
         """Retorna caso de uso configurado para añadir items"""
         return AddItemToOrderUseCase(self._repository, self._pricing_service, self._event_bus)
+    
+    def get_order_use_case(self) -> GetOrderUseCase:
+        """Retorna caso de uso configurado para obtener órdenes"""
+        return GetOrderUseCase(self._repository)
+    
+    def list_orders_use_case(self) -> ListOrdersUseCase:
+        """Retorna caso de uso configurado para listar todas las órdenes"""
+        return ListOrdersUseCase(self._repository)
     
     # Métodos de acceso a infrastructure (útiles para testing)
     def get_repository(self):

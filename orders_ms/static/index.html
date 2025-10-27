@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Microservice</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Orders Microservice</h1>
+            <p>clean.architecture → orders.management</p>
+        </header>
+
+        <div class="dashboard">
+            <!-- Sección para crear órdenes -->
+            <div class="card">
+                <h2>Create New Order</h2>
+                <form id="createOrderForm">
+                    <div class="form-group">
+                        <label for="customerId">Customer ID</label>
+                        <input type="text" id="customerId" placeholder="customer-123" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Order</button>
+                </form>
+                <div id="orderResult" class="result"></div>
+            </div>
+
+            <!-- Sección para listar todas las órdenes -->
+            <div class="card">
+                <h2>All Orders</h2>
+                <button id="loadOrdersBtn" class="btn btn-info">Load All Orders</button>
+                <div id="allOrdersResult" class="result">
+                    <div class="orders-list" id="ordersList"></div>
+                </div>
+            </div>
+
+            <!-- Sección para añadir items -->
+            <div class="card">
+                <h2>Add Item to Order</h2>
+                <form id="addItemForm">
+                    <div class="form-group">
+                        <label for="orderId">Order ID</label>
+                        <select id="orderId" required>
+                            <option value="">Select an order</option>
+                        </select>
+                        <button type="button" id="refreshOrdersBtn" class="btn btn-small" style="margin-top: 8px;">🔄 Refresh Orders</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="sku">Product (SKU)</label>
+                        <select id="sku" required>
+                            <option value="">Select a product</option>
+                            <option value="LAPTOP123">Laptop - LAPTOP123</option>
+                            <option value="MOUSE456">Mouse - MOUSE456</option>
+                            <option value="KEYBOARD789">Keyboard - KEYBOARD789</option>
+                            <option value="MONITOR147">Monitor - MONITOR147</option>
+                            <option value="MOBOARD321">Motherboard - MOBOARD321</option>
+                            <option value="HEADPHONE654">Headphones - HEADPHONE654</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" min="1" value="1" required>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Add Item</button>
+                </form>
+                <div id="itemResult" class="result"></div>
+            </div>
+
+            <!-- Sección para ver resumen de orden -->
+            <div class="card">
+                <h2>View Order Summary</h2>
+                <form id="viewOrderForm">
+                    <div class="form-group">
+                        <label for="viewOrderId">Order ID</label>
+                        <select id="viewOrderId" required>
+                            <option value="">Select an order</option>
+                        </select>
+                        <button type="button" id="refreshViewOrdersBtn" class="btn btn-small" style="margin-top: 8px;">🔄 Refresh Orders</button>
+                    </div>
+                    <button type="submit" class="btn btn-info">View Summary</button>
+                </form>
+                <div id="viewOrderResult" class="result"></div>
+            </div>
+        </div>
+
+        <!-- Sección de historial -->
+        <div class="card">
+            <h2>Action History</h2>
+            <div id="history" class="history"></div>
+            <button id="clearHistory" class="btn btn-small">Clear History</button>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

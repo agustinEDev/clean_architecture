@@ -38,3 +38,12 @@ class OrderRepository(ABC):
         :param order_id: El ID de la orden a eliminar.
         """
         pass
+
+    @abstractmethod
+    def get_all(self) -> list['Order']:
+        """
+        Obtiene todas las órdenes.
+        
+        :return: Lista con todas las órdenes.
+        """
+        pass

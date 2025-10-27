@@ -21,3 +21,7 @@ class InMemoryOrderRepository(OrderRepository):
     def delete(self, order_id: str) -> None:
         if order_id in self.orders:
             del self.orders[order_id]
+    
+    def get_all(self) -> list['Order']:
+        """Obtiene todas las órdenes almacenadas"""
+        return list(self.orders.values())
