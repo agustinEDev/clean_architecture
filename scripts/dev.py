@@ -209,7 +209,8 @@ def run_orders_ms_tests():
     test_files = []
     test_directories = [
         Path("orders_ms/tests/domain"),
-        Path("orders_ms/tests/application")
+        Path("orders_ms/tests/application"),
+        Path("orders_ms/tests/infrastructure") # Añadido para incluir tests de infraestructura
     ]
     
     for test_dir in test_directories:
