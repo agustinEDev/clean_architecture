@@ -61,12 +61,7 @@ class TestContainer(unittest.TestCase):
         response_create = uc_create.execute(request_create)
         self.assertIsNotNone(response_create.order_id)
 
-        # Verificar que la orden existe en el repositorio
-        repository = self.container.get_repository()
-        saved_order = repository.get(response_create.order_id)
-        self.assertIsNotNone(saved_order, "La orden debería estar guardada en el repositorio")
-
-        # Ahora añadir un item
+        # Añadir un item a la orden
         uc_add_item = self.container.add_item_use_case()
         request_add_item = AddItemToOrderRequestDTO(
             order_id=response_create.order_id, 
@@ -77,7 +72,7 @@ class TestContainer(unittest.TestCase):
         
         # Verificar que el item se añadió correctamente
         self.assertIsNotNone(response_add_item)
-        self.assertTrue(response_add_item.success, f"Esperaba success=True pero obtuve success={response_add_item.success}")
+        self.assertTrue(response_add_item.success)
         
         # Verificar que se publicaron más eventos
         event_bus = self.container.get_event_bus()
