@@ -1,6 +1,7 @@
 """
 Pricing Service Interface - Puerto para obtención de precios
 """
+from  typing import Optional
 from abc import ABC, abstractmethod
 from domain.value_objects.sku import SKU
 from domain.value_objects.price import Price
@@ -11,7 +12,7 @@ class PricingService(ABC):
     Define el contrato que deben cumplir las implementaciones.
     """
     @abstractmethod
-    def get_price(self, sku: SKU) -> Price:
+    def get_price(self, sku: SKU) -> Optional[Price]:
         """
         Obtiene el precio de un producto por su SKU.
         

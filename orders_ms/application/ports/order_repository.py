@@ -3,6 +3,7 @@ Order Repository Interface - Puerto para persistencia de pedidos
 """
 from abc import ABC, abstractmethod
 from domain.entities.order import Order
+from typing import Optional
 
 class OrderRepository(ABC):
     """
@@ -20,7 +21,7 @@ class OrderRepository(ABC):
         pass
 
     @abstractmethod
-    def get(self, order_id: str) -> 'Order | None':
+    def get(self, order_id: str) -> Optional['Order']:
         """
         Recupera una orden por su ID.
         
