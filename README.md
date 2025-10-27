@@ -21,24 +21,24 @@ Un microservicio completo para la gestión de pedidos que aplica los principios 
 El proyecto sigue estrictamente los principios de **Clean Architecture**, asegurando que la lógica de negocio (dominio) sea independiente de frameworks y detalles de implementación.
 
 ```mermaid
-graph TD
-    subgraph Presentation [Capa de Presentación]
-        A[FastAPI Endpoints]
+graph TD;
+    subgraph "Presentation (Capa de Presentación)"
+        A["FastAPI Endpoints"]
     end
-    subgraph Application [Capa de Aplicación]
-        B[Casos de Uso]
-        C[DTOs]
-        D[Ports (Interfaces)]
+    subgraph "Application (Capa de Aplicación)"
+        B["Casos de Uso"]
+        C["DTOs"]
+        D["Ports (Interfaces)"]
     end
-    subgraph Domain [Capa de Dominio]
-        E[Entidades]
-        F[Value Objects]
-        G[Eventos de Dominio]
+    subgraph "Domain (Capa de Dominio)"
+        E["Entidades"]
+        F["Value Objects"]
+        G["Eventos de Dominio"]
     end
-    subgraph Infrastructure [Capa de Infraestructura]
-        H[Repositorios en Memoria]
-        I[Servicios Externos]
-        J[Bus de Eventos]
+    subgraph "Infrastructure (Capa de Infraestructura)"
+        H["Repositorios en Memoria"]
+        I["Servicios Externos"]
+        J["Bus de Eventos"]
     end
 
     A --> B
@@ -50,10 +50,9 @@ graph TD
     E --> F
     E --> G
 
-    style Domain fill:#f9f,stroke:#333,stroke-width:2px
-    style Application fill:#ccf,stroke:#333,stroke-width:2px
-    style Presentation fill:#cfc,stroke:#333,stroke-width:2px
-    style Infrastructure fill:#fcf,stroke:#333,stroke-width:2px
+    style E fill:#f9f,stroke:#333,stroke-width:2px
+    style F fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
 ### Flujo de un Caso de Uso: `AddItemToOrder`
