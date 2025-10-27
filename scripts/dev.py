@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """
-dev.py - Script de desarrollo para Clean Architecture Project
+dev_ms.py - Script de desarrollo para Orders Microservice
 
-Este script ejecuta validaciones completas del proyecto desde la raíz,
-incluyendo tests de Python y validación de archivos del proyecto.
-Diseñado para funcionar con workflows de Warp desde la raíz del repositorio.
+Ejecuta validaciones y tests específicos para el microservicio de pedidos.
 """
 
 import subprocess
@@ -12,41 +10,28 @@ import sys
 import os
 from pathlib import Path
 
+
 def print_banner():
     """Imprime banner del proyecto"""
     print("=" * 70)
-    print("🏗️  CLEAN ARCHITECTURE PROJECT - DEV MODE")
-    print("🐍  Python Version + 🛒 Orders Microservice")
+    print("🛒 ORDERS MICROSERVICE - DEV MODE")
     print("=" * 70)
+
 
 def validate_project_structure():
     """Valida que la estructura del proyecto sea correcta"""
-    print("🔍 Validando estructura del proyecto...")
+    print("🔍 Validando estructura del microservicio...")
     print("-" * 50)
-    
+
     required_items = {
-        "README.md": "📖 Documentación principal",
-        ".gitignore": "🙈 Configuración Git",
-        "python_version/": "🐍 Implementación Python",
-        "python_version/main.py": "🚀 Aplicación principal",
-        "python_version/tests/": "🧪 Tests unitarios",
-        "python_version/entities/": "🎯 Entidades del negocio",
-        "python_version/use_cases/": "💼 Casos de uso",
-        "python_version/adapters/": "🔌 Adaptadores",
-        "orders_ms/": "🛒 Orders Microservice",
-        "orders_ms/domain/": "🎯 Dominio Orders",
-        "orders_ms/domain/value_objects/": "💎 Value Objects",
-        "orders_ms/domain/entities/": "📦 Entidades Orders",
-        "orders_ms/domain/events/": "⚡ Eventos de dominio",
-        "orders_ms/application/": "💼 Capa de Aplicación",
-        "orders_ms/application/use_cases/": "🎯 Casos de Uso",
-        "orders_ms/application/ports/": "🔌 Puertos/Interfaces",
-        "orders_ms/application/dtos/": "📋 Data Transfer Objects",
-        "orders_ms/tests/": "🧪 Tests Orders MS",
-        "orders_ms/tests/domain/": "🧪 Tests dominio Orders",
-        "orders_ms/tests/application/": "🧪 Tests aplicación Orders"
+        "main.py": "🚀 Servidor FastAPI",
+        "container.py": "📦 Contenedor de Inyección de Dependencias",
+        "domain/": "🎯 Capa de Dominio",
+        "application/": "💼 Capa de Aplicación",
+        "infrastructure/": "🔧 Capa de Infraestructura",
+        "static/": "🎨 Frontend",
+        "tests/": "🧪 Directorio de Tests",
     }
-    
     all_good = True
     for item, description in required_items.items():
         path = Path(item)
@@ -55,370 +40,131 @@ def validate_project_structure():
         else:
             print(f"❌ {description}: {item} - NO ENCONTRADO")
             all_good = False
-    
+
     return all_good
-
-def get_project_stats():
-    """Obtiene estadísticas del proyecto"""
-    print("\n📊 ESTADÍSTICAS DEL PROYECTO:")
-    print("-" * 50)
-    
-    # Python Version Stats
-    print("🐍 PYTHON VERSION:")
-    python_tests = Path("python_version/tests")
-    if python_tests.exists():
-        test_files = list(python_tests.rglob("test_*.py"))
-        print(f"   🧪 Archivos de test: {len(test_files)}")
-    
-    use_cases = Path("python_version/use_cases")
-    if use_cases.exists():
-        use_case_files = list(use_cases.glob("*_use_case.py"))
-        print(f"   💼 Casos de uso: {len(use_case_files)}")
-    
-    users_json = Path("python_version/users.json")
-    if users_json.exists():
-        print("   💾 users.json: ✅ Datos existentes")
-    else:
-        print("   💾 users.json: ⚪ Sin datos")
-    
-    # Orders Microservice Stats
-    print("\n🛒 ORDERS MICROSERVICE:")
-    orders_domain = Path("orders_ms/domain")
-    if orders_domain.exists():
-        value_objects = list(orders_domain.glob("value_objects/*.py"))
-        entities = list(orders_domain.glob("entities/*.py"))
-        events = list(orders_domain.glob("events/*.py"))
-        
-        vo_count = len([f for f in value_objects if not f.name.startswith('__')])
-        entity_count = len([f for f in entities if not f.name.startswith('__')])
-        event_count = len([f for f in events if not f.name.startswith('__')])
-        
-        print(f"   💎 Value Objects: {vo_count}")
-        print(f"   📦 Entidades: {entity_count}")
-        print(f"   ⚡ Eventos: {event_count}")
-    
-    orders_tests = Path("orders_ms/tests")
-    if orders_tests.exists():
-        test_files = list(orders_tests.rglob("test_*.py"))
-        print(f"   🧪 Tests de dominio: {len(test_files)}")
-    
-    # Verificar documentación
-    readme = Path("README.md")
-    if readme.exists():
-        lines = len(readme.read_text().splitlines())
-        print(f"� README.md: ✅ {lines} líneas de documentación")
-
-def run_python_tests():
-    """Ejecuta todos los tests de Python Version"""
-    print("\n🧪 Ejecutando Tests de Python Version...")
-    print("-" * 50)
-    
-    # Buscar todos los archivos de test
-    test_files = []
-    test_directories = [
-        Path("python_version/tests")
-    ]
-    
-    for test_dir in test_directories:
-        if test_dir.exists():
-            for test_file in test_dir.rglob("test_*.py"):
-                test_files.append(test_file)
-    
-    if not test_files:
-        print("⚠️  No se encontraron archivos de test en python_version")
-        return False, 0, 0
-    
-    print(f"📋 Encontrados {len(test_files)} archivos de test:")
-    for test_file in sorted(test_files):
-        rel_path = test_file.relative_to(Path("python_version"))
-        print(f"   - {rel_path}")
-    
-    print("\n🚀 Ejecutando tests de Python Version...")
-    
-    # Ejecutar cada test individualmente usando python -m desde python_version
-    all_passed = True
-    passed_tests = []
-    failed_tests = []
-    
-    original_cwd = os.getcwd()
-    
-    for test_file in sorted(test_files):
-        test_name = test_file.name
-        
-        # Convertir la ruta del archivo a módulo Python
-        rel_path = test_file.relative_to(Path("python_version"))
-        module_path = str(rel_path).replace('/', '.').replace('.py', '')
-        
-        print(f"\n▶️  Ejecutando {test_name}...")
-        
-        try:
-            # Cambiar al directorio python_version para ejecutar con python -m
-            os.chdir("python_version")
-            
-            result = subprocess.run([
-                sys.executable, "-m", module_path
-            ], capture_output=True, text=True)
-            
-            # Parsear número de tests ejecutados desde el output (unittest usa stderr)
-            import re
-            test_count = 1  # Default a 1 si no se puede parsear
-            test_output = (result.stdout or '') + (result.stderr or '')
-            if test_output:
-                match = re.search(r'Ran (\d+) test', test_output)
-                if match:
-                    test_count = int(match.group(1))
-            
-            if result.returncode == 0:
-                print(f"   ✅ {test_name} - PASSED ({test_count} tests)")
-                for i in range(test_count):
-                    passed_tests.append(f"{test_name}_test_{i}")
-            else:
-                print(f"   ❌ {test_name} - FAILED ({test_count} tests)")
-                if result.stderr:
-                    print(f"      Error: {result.stderr.strip()}")
-                for i in range(test_count):
-                    failed_tests.append(f"{test_name}_test_{i}")
-                all_passed = False
-                
-        except Exception as e:
-            print(f"   ❌ {test_name} - ERROR: {e}")
-            failed_tests.append(test_name)
-            all_passed = False
-        finally:
-            # Volver al directorio original
-            os.chdir(original_cwd)
-    
-    # Resumen final
-    print(f"\n📊 RESUMEN PYTHON VERSION:")
-    print(f"   ✅ Pasaron: {len(passed_tests)}")
-    print(f"   ❌ Fallaron: {len(failed_tests)}")
-    
-    if failed_tests:
-        print(f"\n❌ Tests Python Version que fallaron:")
-        for test in failed_tests:
-            print(f"   - {test}")
-    
-    return all_passed, len(passed_tests), len(failed_tests)
 
 def run_orders_ms_tests():
     """Ejecuta todos los tests del microservicio de orders"""
-    print("\n🛒 Ejecutando Tests de Orders Microservice...")
+    print("\n🧪 Ejecutando Tests de Orders Microservice...")
     print("-" * 50)
-    
-    # Buscar todos los archivos de test en domain y application
+
+    # Buscar recursivamente en todo el directorio de tests para incluir todos los tests (domain, app, infra, http)
+    test_directories = [Path("tests")]
     test_files = []
-    test_directories = [
-        Path("orders_ms/tests/domain"),
-        Path("orders_ms/tests/application"),
-        Path("orders_ms/tests/infrastructure") # Añadido para incluir tests de infraestructura
-    ]
-    
     for test_dir in test_directories:
         if test_dir.exists():
-            for test_file in test_dir.rglob("test_*.py"):
-                test_files.append(test_file)
-    
+            test_files.extend(list(test_dir.rglob("test_*.py")))
+
+    # Eliminar duplicados y ordenar
+    test_files = sorted(list(set(test_files)))
+
     if not test_files:
-        print("⚠️  No se encontraron archivos de test en orders_ms")
-        return False
-    
-    print(f"📋 Encontrados {len(test_files)} archivos de test:")
-    for test_file in sorted(test_files):
-        rel_path = test_file.relative_to(Path("orders_ms"))
-        print(f"   - {rel_path}")
-    
-    print("\n🚀 Ejecutando tests de Orders MS...")
-    
-    # Ejecutar cada test individualmente usando python -m desde el directorio orders_ms
+        print("⚠️  No se encontraron archivos de test.")
+        return False, 0, 0
+
+    print(f"📋 Encontrados {len(test_files)} archivos de test.")
+
     all_passed = True
-    passed_tests = []
-    failed_tests = []
-    
-    original_cwd = os.getcwd()
-    
+    passed_count = 0
+    failed_count = 0
+
     for test_file in sorted(test_files):
         test_name = test_file.name
-        
-        # Convertir la ruta del archivo a módulo Python
-        rel_path = test_file.relative_to(Path("orders_ms"))
-        module_path = str(rel_path).replace('/', '.').replace('.py', '')
+        module_path = str(test_file).replace('/', '.').replace('.py', '')
         
         print(f"\n▶️  Ejecutando {test_name}...")
         
         try:
-            # Cambiar al directorio orders_ms para ejecutar con python -m
-            os.chdir("orders_ms")
-            
-            result = subprocess.run([
-                sys.executable, "-m", module_path
-            ], capture_output=True, text=True)
-            
-            # Parsear número de tests ejecutados desde el output (unittest usa stderr)
+            result = subprocess.run(
+                [sys.executable, "-m", "unittest", str(test_file)],
+                capture_output=True, text=True, check=False,
+                # Asegurarse de que el PYTHONPATH incluye la raíz del proyecto
+                env={**os.environ, "PYTHONPATH": f"{os.getcwd()}:{os.environ.get('PYTHONPATH', '')}"}
+            )
+
             import re
-            test_count = 1  # Default a 1 si no se puede parsear
-            test_output = (result.stdout or '') + (result.stderr or '')
-            if test_output:
-                match = re.search(r'Ran (\d+) test', test_output)
-                if match:
-                    test_count = int(match.group(1))
-            
-            if result.returncode == 0:
-                print(f"   ✅ {test_name} - PASSED ({test_count} tests)")
-                for i in range(test_count):
-                    passed_tests.append(f"{test_name}_test_{i}")
+            test_output = result.stdout + result.stderr
+            ran_match = re.search(r"Ran (\d+) test", test_output)
+            current_tests = int(ran_match.group(1)) if ran_match else 0
+
+            if result.returncode == 0 and "OK" in test_output:
+                print(f"   ✅ {test_name} - PASSED ({current_tests} tests)")
+                passed_count += current_tests
             else:
-                print(f"   ❌ {test_name} - FAILED ({test_count} tests)")
-                if result.stdout:
-                    print(f"   STDOUT: {result.stdout}")
-                if result.stderr:
-                    print(f"   STDERR: {result.stderr}")
-                for i in range(test_count):
-                    failed_tests.append(f"{test_name}_test_{i}")
+                print(f"   ❌ {test_name} - FAILED")
+                print(test_output)
+                # Si el test falla al importar, current_tests será 0. Contar como 1 fallo.
+                # Si el módulo no se puede importar, ran_match será None y current_tests 0.
+                failed_count += current_tests if current_tests > 0 else 1
                 all_passed = False
-                
         except Exception as e:
             print(f"   ❌ {test_name} - ERROR: {e}")
-            failed_tests.append(test_name)
+            failed_count += 1
             all_passed = False
-        finally:
-            os.chdir(original_cwd)
-    
-    # Resumen final
-    print(f"\n📊 RESUMEN ORDERS MS:")
-    print(f"   ✅ Pasaron: {len(passed_tests)}")
-    print(f"   ❌ Fallaron: {len(failed_tests)}")
-    
-    if failed_tests:
-        print(f"\n❌ Tests Orders MS que fallaron:")
-        for test in failed_tests:
-            print(f"   - {test}")
-    
-    return all_passed, len(passed_tests), len(failed_tests)
 
-def check_git_status():
-    """Verifica el estado de Git"""
-    print("\n📝 Estado de Git:")
-    print("-" * 50)
+    print("\n" + "-" * 50)
+    print(f"📊 RESUMEN ORDERS MS:")
+    total_tests = passed_count + failed_count
+    print(f"   Total tests: {total_tests}")
+    print(f"   ✅ Pasaron: {passed_count}")
+    print(f"   ❌ Fallaron: {failed_count}")
     
-    try:
-        # Verificar si hay cambios
-        result = subprocess.run(
-            ["git", "status", "--porcelain"],
-            capture_output=True, text=True, check=True
-        )
-        
-        if result.stdout.strip():
-            print("� Cambios detectados:")
-            for line in result.stdout.strip().split('\n'):
-                print(f"   {line}")
-        else:
-            print("✅ No hay cambios pendientes")
-            
-        # Mostrar rama actual
-        branch_result = subprocess.run(
-            ["git", "branch", "--show-current"],
-            capture_output=True, text=True, check=True
-        )
-        print(f"🌿 Rama actual: {branch_result.stdout.strip()}")
-        
-    except subprocess.CalledProcessError:
-        print("⚠️  No es un repositorio Git o Git no está disponible")
+    return all_passed, passed_count, failed_count
 
 def main():
     """Función principal del modo desarrollo"""
+    # 1. Establecer el directorio de trabajo en la carpeta 'orders_ms'
+    repo_root = Path(__file__).resolve().parent.parent  # Raíz del repositorio
+    project_root = repo_root / "orders_ms"  # Ruta a /orders_ms
+    
+    os.chdir(project_root)
+    print(f"✅ Directorio de trabajo: {project_root}")
+
     print_banner()
-    
-    # Validar estructura
+
+    # 2. Validar la estructura del proyecto
     structure_ok = validate_project_structure()
-    
-    # Mostrar estadísticas
-    get_project_stats()
-    
-    # Verificar estado de Git
-    check_git_status()
-    
-    # Ejecutar tests si la estructura es correcta
-    if structure_ok:
-        python_tests_passed, python_passed_count, python_failed_count = run_python_tests()
-        orders_tests_passed, orders_passed_count, orders_failed_count = run_orders_ms_tests()
-        tests_passed = python_tests_passed and orders_tests_passed
-    else:
-        print("\n❌ Estructura del proyecto incorrecta, saltando tests...")
-        tests_passed = False
-        python_tests_passed = False
-        python_passed_count = 0
-        python_failed_count = 0
-        orders_tests_passed = False
-        orders_passed_count = 0
-        orders_failed_count = 0
-    
-    # Resumen final detallado
+    if not structure_ok:
+        print("\n❌ Estructura del proyecto incorrecta. Abortando.")
+        sys.exit(1)
+
+    # 3. Ejecutar los tests
+    tests_passed, passed_count, failed_count = run_orders_ms_tests()
+    total_tests = passed_count + failed_count
+
+    # 4. Mostrar resumen final
     print("\n" + "=" * 70)
-    print("📋 RESUMEN FINAL DE TESTS")
+    print("📋 RESUMEN FINAL")
     print("=" * 70)
+
+    orders_icon = "✅" if tests_passed else "❌"
+    print(f"{orders_icon} ORDERS MICROSERVICE:")
     
-    # Resumen Python Version
-    if structure_ok:
-        python_icon = "✅" if python_tests_passed else "❌"
-        print(f"{python_icon} PYTHON VERSION:")
-        if python_tests_passed:
-            python_total = python_passed_count + python_failed_count
-            print(f"   🧪 Todos los tests unitarios pasaron ({python_passed_count}/{python_total})")
-            print("   💼 5 casos de uso implementados")
-            print("   📦 Entidades y adaptadores validados")
-        else:
-            python_total = python_passed_count + python_failed_count
-            print(f"   ❌ Algunos tests unitarios fallaron ({python_passed_count}/{python_total}) - revisar output anterior")
+    if tests_passed and total_tests > 0:
+        print(f"   🧪 Todos los tests pasaron ({passed_count}/{total_tests}). ¡Excelente trabajo!")
+        print("\n   --- Resumen de Componentes Validados ---")
+        print("   🎯 Capa de Dominio:")
+        print("      - 💎 4 Value Objects (OrderId, SKU, Price, Quantity)")
+        print("      - 📦 1 Entidad (Order) con eventos de dominio")
+        print("   💼 Capa de Aplicación:")
+        print("      - ✨ 4 Casos de Uso (Create, AddItem, Get, List)")
+        print("      - 🔌 3 Puertos (Repository, Pricing, EventBus) y 9 DTOs")
+        print("   🔧 Capa de Infraestructura:")
+        print("      - ⚙️ 3 Implementaciones (InMemoryRepo, StaticPricing, InMemoryBus)")
+        print("   🌐 Capa HTTP:")
+        print("      - 🔌 Endpoints para los 4 casos de uso")
     else:
-        print("❌ PYTHON VERSION: Estructura incompleta")
-    
-    # Resumen Orders MS
-    if structure_ok:
-        orders_icon = "✅" if orders_tests_passed else "❌"
-        print(f"\n{orders_icon} ORDERS MICROSERVICE:")
-        if orders_tests_passed:
-            total_orders_tests = orders_passed_count + orders_failed_count
-            print(f"   🧪 Todos los tests pasaron ({orders_passed_count}/{total_orders_tests})")
-            print("   💎 4 Value Objects implementados y validados")
-            print("   📦 1 Entidad (Order) con eventos de dominio")
-            print("   ⚡ 3 Eventos de dominio implementados")
-            print("   💼 2 Casos de Uso (CreateOrder + AddItemToOrder) implementados")
-            print("   🔌 3 Puertos/Interfaces (Repository, PricingService, EventBus)")
-            print("   📋 4 DTOs (Request/Response para ambos casos de uso)")
-            print("   ✅ Domain + Application Layer completados")
-        else:
-            total_orders_tests = orders_passed_count + orders_failed_count
-            print(f"   ❌ Algunos tests fallaron ({orders_passed_count}/{total_orders_tests}) - revisar output anterior")
-    else:
-        print("\n❌ ORDERS MICROSERVICE: Estructura incompleta")
-    
-    # Resultado general
+        print(f"   ❌ Algunos tests fallaron ({passed_count}/{total_tests}) - revisar output anterior")
+
     print("\n" + "-" * 70)
-    if structure_ok and tests_passed:
-        # Calcular totales dinámicamente
-        python_total = python_passed_count + python_failed_count
-        orders_total = orders_passed_count + orders_failed_count
-        total_tests = python_total + orders_total
-        
-        print("🎉 RESULTADO: ¡Ambos proyectos completos y tests pasando!")
-        print(f"📊 TOTALES: {total_tests}/{total_tests} tests pasaron")
-        print("🚀 Estado: Listo para commit y push")
-        print("🎯 Próximo paso: Implementar capa de infraestructura en Orders MS")
+    if tests_passed:
+        print(f"🎉 RESULTADO: ¡Todo correcto! {passed_count}/{total_tests} tests pasaron.")
+        print("🚀 El microservicio está listo.")
         sys.exit(0)
     else:
-        print("🔧 RESULTADO: Revisar errores antes de continuar")
-        total_issues = 0
-        if not structure_ok:
-            print("   🏗️  Estructura del proyecto incompleta")
-            total_issues += 1
-        if structure_ok and not python_tests_passed:
-            print("   🐍 Tests de Python Version fallando")
-            total_issues += 1
-        if structure_ok and not orders_tests_passed:
-            print("   🛒 Tests de Orders MS fallando")
-            total_issues += 1
-        print(f"📊 Total de problemas encontrados: {total_issues}")
+        print(f"🔧 RESULTADO: Se encontraron problemas. {failed_count} tests fallaron.")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

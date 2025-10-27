@@ -3,11 +3,9 @@ import uuid
 class OrderId:
     def __init__(self, code: str = None):
         if code is None:
-            self._code = 'ORDER-' + str(uuid.uuid4())  # Genera un UUID único como OrderID
-        elif code.startswith('ORDER-'):
-            self._code = code
+            self._code = 'ORDER-' + str(uuid.uuid4())
         else:
-            self._code = 'ORDER-' + code
+            self._code = code
 
     @property
     def code(self) -> str:

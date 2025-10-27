@@ -9,6 +9,5 @@ uvicorn[standard]==0.24.0
 # Validación de datos (incluido con FastAPI pero lo especificamos)
 pydantic==2.5.0
 
-# Para testing HTTP (lo instalaremos después)
-# httpx==0.25.2
-# pytest-asyncio==0.21.1
+# Para testing de endpoints HTTP
+httpx==0.25.2

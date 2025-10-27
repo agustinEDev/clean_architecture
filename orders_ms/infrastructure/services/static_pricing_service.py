@@ -27,6 +27,9 @@ class StaticPricingService(PricingService):
             "CPUINTELI7K": Decimal("329.99"),
             "PSU750WGOLD": Decimal("119.99"),
             "CASEATXMID": Decimal("99.99"),
+            # SKUs para los tests de HTTP
+            "KEYBOARD89": Decimal("89.99"),
+            "SPECIAL123": Decimal("59.99"),
         }
 
     def get_price(self, sku: SKU) -> Optional[Price]:

@@ -49,6 +49,7 @@ class AddItemRequest(BaseModel):
 
 # Crear el Container (Dependency Injection)
 container = Container()
+app.container = container # Adjuntar para acceso en tests
 
 # Endpoint para crear órdenes
 @app.post("/orders")
