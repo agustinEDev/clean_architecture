@@ -11,3 +11,8 @@ pydantic==2.5.0
 
 # Para testing de endpoints HTTP
 httpx==0.25.2
+
+# Dependencias para PostgreSQL
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.12.1

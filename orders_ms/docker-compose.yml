@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Tu microservicio
+  orders-api:
+    build: .
+    ports:
+      - "8000:8000"
+    container_name: orders-microservice
+    restart: unless-stopped
+    depends_on:
+      - orders-db
+    environment:
+      - DATABASE_URL=postgresql://orders_user:orders_pass@orders-db:5432/orders_db
+
+  # Base de datos PostgreSQL
+  orders-db:
+    image: postgres:13-alpine
+    container_name: orders-database
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=orders_db
+      - POSTGRES_USER=orders_user
+      - POSTGRES_PASSWORD=orders_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+volumes:
+  postgres_data:
