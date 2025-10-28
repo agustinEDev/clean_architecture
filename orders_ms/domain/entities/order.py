@@ -42,21 +42,11 @@ class Order:
         return order
     
     def add_item(self, sku: SKU, quantity: Quantity, price: Price):
-        # Buscar si el SKU ya existe en la orden
-        for i, (existing_sku, existing_quantity, existing_price) in enumerate(self._items):
-            if existing_sku.code == sku.code:
-                # Si existe, sumar las cantidades
-                new_quantity = Quantity(existing_quantity.amount + quantity.amount)
-                self._items[i] = (existing_sku, new_quantity, existing_price)
-                self._logger.info(f"Updated item in order {self._order_id.code}: SKU={sku.code}, New Quantity={new_quantity.amount}")
-                self._domain_events.append(ItemAdded(self._order_id.code, sku.code, quantity.amount, price.amount))
-                return
-        
-        # Si no existe, agregar nuevo item
-        self._logger.info(f"Adding new item to order {self._order_id.code}: SKU={sku.code}, Quantity={quantity.amount}, Price={price.amount}")
+        # Agrega item y emite ItemAdded event
+        self._logger.info(f"Adding item to order {self._order_id.code}: SKU={sku.code}, Quantity={quantity.amount}, Price={price.amount}")
         self._items.append((sku, quantity, price))
         self._domain_events.append(ItemAdded(self._order_id.code, sku.code, quantity.amount, price.amount))
-        self._logger.debug(f"Item added successfully. Order {self._order_id.code} now has {len(self._items)} unique items")
+        self._logger.debug(f"Item added successfully. Order {self._order_id.code} now has {len(self._items)} items")
 
     def __str__(self):
         return f"Order(ID: {self._order_id}, CustomerID: {self._customer_id})"
