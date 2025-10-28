@@ -1,20 +1,96 @@
-# 🛒 Orders Microservice - Clean Architecture & DDD
+<div align="center">
 
-Un microservicio completo para la gestión de pedidos que aplica los principios de **Clean Architecture** y **Domain-Driven Design (DDD)**. El proyecto incluye una API REST con FastAPI, un frontend web funcional y un conjunto completo de tests que validan cada capa de la arquitectura.
+# 🛒 Orders Microservice
+## Clean Architecture & Domain-Driven Design
 
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
-[![Tests](https://img.shields.io/badge/Tests-52%2F52%20✅-green.svg)](#-testing)
-[![DDD](https://img.shields.io/badge/DDD-Domain%20Driven%20Design-purple.svg)](#)
+*Un microservicio completo para la gestión de pedidos que implementa patrones de arquitectura de software de nivel empresarial*
+
+---
+
+[![Python](https://img.shields.io/badge/Python-3.10+-3776ab?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
+[![Tests](https://img.shields.io/badge/Tests-51%2F51%20✅-00C851?style=for-the-badge&logo=checkmarx&logoColor=white)](#-testing)
+
+[![DDD](https://img.shields.io/badge/DDD-Domain%20Driven%20Design-7B68EE?style=for-the-badge)](https://martinfowler.com/tags/domain%20driven%20design.html)
+[![Clean Architecture](https://img.shields.io/badge/Clean-Architecture-FF6B6B?style=for-the-badge)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+[![SOLID](https://img.shields.io/badge/SOLID-Principles-4ECDC4?style=for-the-badge)](https://en.wikipedia.org/wiki/SOLID)
+
+</div>
+
+---
+
+## 🚀 Quick Start
+
+### 🐳 Con Docker (Recomendado)
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/agustinEDev/clean_architecture.git
+cd clean_architecture/orders_ms
+
+# 2. Ejecutar con Docker
+docker-compose up
+
+# 3. ¡Ya está! Accede a:
+# 🌐 Frontend: http://localhost:8000/app
+# 📡 API: http://localhost:8000/orders
+```
+
+### 🐍 Sin Docker (Tradicional)
+```bash
+# 1. Configurar entorno Python
+cd orders_ms
+python -m venv .venv
+source .venv/bin/activate  # En Windows: .venv\Scripts\activate
+
+# 2. Instalar dependencias
+pip install -r requirements.txt
+
+# 3. Ejecutar aplicación
+python main.py
+```
+
+## 🛠️ Stack Tecnológico
+
+### Backend
+- **🐍 Python 3.10+** - Lenguaje principal con sintaxis moderna
+- **⚡ FastAPI** - Framework web moderno y de alto rendimiento
+- **🎯 Uvicorn** - Servidor ASGI para aplicaciones asíncronas
+- **📊 Pydantic** - Validación de datos y serialización
+
+### Frontend
+- **🌐 HTML5** - Estructura semántica moderna
+- **🎨 CSS3** - Diseño responsive con Grid y Flexbox
+- **⚙️ JavaScript ES6+** - Interactividad del lado del cliente
+- **🔤 Google Fonts** - Tipografías Inter y JetBrains Mono
+
+### DevOps & Containerización
+- **🐳 Docker** - Containerización de aplicaciones
+- **🧩 Docker Compose** - Orquestación de servicios
+- **🔧 Shell Scripts** - Automatización de tareas
+
+### Testing & Quality
+- **🧪 unittest** - Framework de testing nativo de Python
+- **🎭 Mocking** - Aislamiento de dependencias en tests
+- **📊 Coverage Analysis** - Análisis de cobertura de código
+
+### Arquitectura & Patrones
+- **🏗️ Clean Architecture** - Separación de responsabilidades en capas
+- **🎯 Domain-Driven Design** - Modelado centrado en el dominio del negocio
+- **🔌 Dependency Injection** - Inversión de control y desacoplamiento
+- **📢 Event-Driven Architecture** - Comunicación mediante eventos de dominio
 
 ## ✨ Funcionalidades Principales
 
-- **API REST Completa**: Endpoints para crear órdenes, añadir artículos, y consultar órdenes.
-- **Frontend Elegante**: Interfaz web responsive y profesional para interactuar con la API.
-- **Domain-Driven Design**: Modelado del dominio con Value Objects, Entities y Domain Events.
-- **Arquitectura Dirigida por Eventos**: Los eventos de dominio (ej. `OrderCreated`) desacoplan la lógica.
-- **Inyección de Dependencias**: Un `Container` se encarga de construir y proveer las dependencias.
-- **Tests Unitarios y de Integración**: 36 tests que cubren todas las capas del microservicio.
-- **Logging Profesional**: Sistema de logging configurable con rotación de ficheros para un seguimiento detallado.
+- **🔗 API REST Completa**: 4 endpoints para gestión completa de órdenes
+- **🎨 Frontend Elegante**: Interfaz responsive con diseño minimalista blanco y negro
+- **🏗️ Clean Architecture**: Separación clara de responsabilidades en 4 capas
+- **🎯 Domain-Driven Design**: Value Objects, Entidades y Eventos de dominio
+- **📢 Event-Driven**: Arquitectura dirigida por eventos (`OrderCreated`, `ItemAdded`)
+- **💉 Dependency Injection**: Container IoC para gestión de dependencias
+- **🧪 Testing Completo**: 51/51 tests unitarios y de integración
+- **🐳 Docker Ready**: Containerización completa con Docker y Docker Compose
+- **📝 Logging Avanzado**: Sistema de logging con rotación de archivos
 
 ## 🏗️ Arquitectura del Proyecto
 
@@ -85,61 +161,105 @@ sequenceDiagram
     API-->>-Client: 200 OK {success: true}
 ```
 
-## 📁 Estructura de Ficheros
+## 📁 Estructura del Proyecto
 
-La organización de los ficheros refleja las capas de la arquitectura:
+La organización refleja las capas de Clean Architecture y incluye containerización:
 
 ```
 orders_ms/
-├── domain/            # 🎯 Lógica de negocio pura (Entidades, Value Objects, Eventos).
-├── application/       # 💼 Orquestación (Casos de Uso, DTOs, Puertos/Interfaces).
-├── infrastructure/    # 🔧 Implementaciones concretas (Repositorios, Servicios, Bus de Eventos).
-├── static/            # 🎨 Frontend (HTML, CSS, JS).
-├── tests/             # 🧪 Tests por capas (domain, application, infrastructure, http).
-├── main.py            # 🚀 Capa de Presentación (API con FastAPI).
-├── container.py       # 📦 Inyección de Dependencias (Composition Root).
-├── scripts/dev_ms.py  # 🛠️ Script de desarrollo y testing.
-└── requirements.txt   # 📄 Dependencias del proyecto.
+├── 🎯 domain/                    # Capa de Dominio - Lógica de negocio pura
+│   ├── entities/                # Entidades del dominio (Order)
+│   ├── value_objects/           # Value Objects (SKU, Price, Quantity, OrderId)  
+│   └── events/                  # Eventos de dominio (OrderCreated, ItemAdded)
+├── 💼 application/              # Capa de Aplicación - Orquestación
+│   ├── use_cases/              # Casos de uso (Create, AddItem, Get, List)
+│   ├── dtos/                   # Data Transfer Objects
+│   └── ports/                  # Interfaces/Puertos (Repository, PricingService)
+├── 🔧 infrastructure/           # Capa de Infraestructura - Implementaciones
+│   ├── repositories/           # InMemoryOrderRepository
+│   ├── services/               # StaticPricingService  
+│   └── events/                 # InMemoryEventBus
+├── 🧪 tests/                    # Tests organizados por capas
+│   ├── domain/                 # Tests de entidades y value objects
+│   ├── application/            # Tests de casos de uso y DTOs
+│   ├── infrastructure/         # Tests de repositorios y servicios
+│   └── http/                   # Tests de endpoints HTTP
+├── 🎨 static/                   # Frontend - Interfaz de usuario
+│   ├── index.html             # Aplicación web SPA
+│   ├── style.css              # Estilos responsive B&N
+│   └── app.js                 # Lógica del cliente
+├── 🐳 Docker Files              # Containerización
+│   ├── Dockerfile             # Imagen del microservicio
+│   └── docker-compose.yml     # Orquestación de servicios
+├── 🚀 main.py                   # Capa de Presentación - API FastAPI
+├── 📦 container.py              # Inyección de Dependencias (IoC Container)
+├── 🛠️ dev_ms.py                 # Script de desarrollo y testing
+└── 📄 requirements.txt          # Dependencias Python
 ```
 
-## 🚀 Cómo Empezar
+## � Docker & Containerización
 
-### 1. Configuración del Entorno
+### ¿Por qué Docker?
+
+Docker resuelve el problema del "funciona en mi máquina" empaquetando la aplicación con todas sus dependencias en un contenedor portable.
+
+#### 🔄 Comparativa: Con vs Sin Docker
+
+| Aspecto | Sin Docker | Con Docker |
+|---------|------------|------------|
+| **Setup** | 7 pasos manuales | 1 comando |
+| **Dependencias** | Instalar Python, pip, etc. | Todo incluido |
+| **Portabilidad** | "Funciona en mi máquina" | Funciona en cualquier lugar |
+| **Aislamiento** | Conflictos con otros proyectos | Entorno aislado |
+| **Reproducibilidad** | Depende del entorno local | 100% reproducible |
+
+### 🚀 Comandos Docker
 
 ```bash
-# 1. Navega al directorio del microservicio
+# Construcción manual
+docker build -t orders-microservice .
+docker run -p 8000:8000 orders-microservice
+
+# Con Docker Compose (recomendado)
+docker-compose up        # Ejecutar
+docker-compose up -d     # Ejecutar en background  
+docker-compose down      # Parar y limpiar
+docker-compose logs      # Ver logs
+```
+
+### 📋 Configuración Docker
+
+**Dockerfile:**
+- Imagen base: `python:3.10-slim`
+- Puerto expuesto: `8000`
+- Comando de inicio: `python main.py`
+
+**docker-compose.yml:**
+- Servicio único: `orders-api`
+- Mapeo de puerto: `8000:8000`
+- Restart automático: `unless-stopped`
+
+## 🧪 Testing
+
+### Ejecutar Tests
+
+```bash
+# Con el script de desarrollo (recomendado)
 cd orders_ms
+python ../scripts/dev.py
 
-# 2. (Recomendado) Crea y activa un entorno virtual
-python -m venv .venv
-source .venv/bin/activate
-
-# 3. Instala las dependencias
-pip install -r requirements.txt
-```
-
-### 2. Ejecutar el Microservicio
-
-```bash
-# Inicia el servidor web de FastAPI
-python main.py
-```
-
-Una vez iniciado, puedes:
-- **Abrir el frontend**: `http://localhost:8000/app`
-- **Interactuar con la API**: `http://localhost:8000/orders`
-
-### Ejecutar los Tests
-
-El proyecto incluye un script de desarrollo para validar la estructura y ejecutar todos los tests.
-
-```bash
-# Ejecuta el script de desarrollo (tests + validaciones)
-python dev_ms.py
-
-# O ejecuta los tests directamente con unittest
+# O directamente con unittest
 python -m unittest discover tests -v
 ```
+
+### Cobertura de Tests: 51/51 ✅
+
+| Capa | Tests | Cobertura |
+|------|-------|-----------|
+| **Domain** | 12 tests | Entidades y Value Objects |
+| **Application** | 16 tests | Casos de Uso y DTOs |
+| **Infrastructure** | 19 tests | Repositorios y Servicios |
+| **HTTP** | 4 tests | Endpoints de la API |
 
 ## 📖 Conceptos Clave Implementados
 
@@ -168,9 +288,69 @@ La interfaz de usuario está construida con HTML, CSS y JavaScript puro, demostr
 - **Tests de Aplicación**: Prueban los casos de uso con `mocks` para las dependencias externas (repositorios, servicios).
 - **Tests de Infraestructura**: Aseguran que las implementaciones concretas (como el `InMemoryOrderRepository` y el `Container`) funcionan como se espera.
 
-## 🛠️ Próximos Pasos
+## � Fuentes y Referencias
 
-- [ ] **Persistencia en Base de Datos**: Reemplazar `InMemoryOrderRepository` por una implementación con PostgreSQL.
-- [ ] **Autenticación y Autorización**: Proteger los endpoints de la API con JWT.
-- [ ] **Documentación de API**: Generar documentación automática con OpenAPI/Swagger.
-- [ ] **Dockerización**: Crear un `Dockerfile` para facilitar el despliegue del microservicio.
+Este proyecto implementa patrones y principios de arquitectura de software basados en las siguientes fuentes:
+
+### 📖 Arquitectura y Patrones
+- **[Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)** - Robert C. Martin (Uncle Bob)
+- **[Domain-Driven Design](https://martinfowler.com/tags/domain%20driven%20design.html)** - Eric Evans & Martin Fowler
+- **[Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)** - Alistair Cockburn
+- **[SOLID Principles](https://en.wikipedia.org/wiki/SOLID)** - Principios de diseño orientado a objetos
+
+### 🛠️ Tecnologías y Frameworks
+- **[FastAPI Documentation](https://fastapi.tiangolo.com)** - Framework web moderno para Python
+- **[Docker Best Practices](https://docs.docker.com/develop/best-practices/)** - Containerización y despliegue
+- **[Python Type Hints](https://docs.python.org/3/library/typing.html)** - Tipado estático en Python
+- **[unittest Documentation](https://docs.python.org/3/library/unittest.html)** - Testing framework nativo
+
+### 🎨 Frontend y UX
+- **[Inter Font](https://rsms.me/inter/)** - Tipografía moderna para interfaces
+- **[JetBrains Mono](https://www.jetbrains.com/lp/mono/)** - Fuente monospace para código
+- **[CSS Grid Layout](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout)** - Sistema de layout moderno
+
+## 👨‍💻 Sobre el Creador
+
+### Agustín Estévez Domínguez
+*Software Developer & Clean Architecture Enthusiast*
+
+- 🐙 **GitHub**: [@agustinEDev](https://github.com/agustinEDev)
+- 📧 **Email**: [Contactar via GitHub Issues](https://github.com/agustinEDev/clean_architecture/issues)
+- 💼 **LinkedIn**: [Perfil Profesional](https://linkedin.com/in/agustin-estevez-dominguez)
+
+### 🎯 Experiencia Aplicada
+- **Clean Architecture**: Implementación práctica de patrones arquitectónicos
+- **Domain-Driven Design**: Modelado de dominios complejos
+- **Docker & Containerización**: DevOps y despliegue de aplicaciones
+- **Testing**: TDD y cobertura completa de código
+
+## 🤝 Contribuciones y Soporte
+
+### 🐛 Reportar Issues
+¿Encontraste un bug o tienes una sugerencia? 
+
+👉 **[Crear una Issue en GitHub](https://github.com/agustinEDev/clean_architecture/issues/new)**
+
+Por favor incluye:
+- 📝 Descripción detallada del problema
+- 🔄 Pasos para reproducir
+- 💻 Información del entorno (OS, Python version, Docker version)
+- 📸 Screenshots si es relevante
+
+### 💡 Contribuir al Proyecto
+
+1. **Fork** el repositorio
+2. **Crea** una rama para tu feature (`git checkout -b feature/amazing-feature`)
+3. **Commit** tus cambios (`git commit -m 'Add amazing feature'`)
+4. **Push** a la rama (`git push origin feature/amazing-feature`)
+5. **Abre** un Pull Request
+
+### 📋 Areas de Mejora
+
+- [ ] **Persistencia en Base de Datos**: PostgreSQL/SQLite implementation
+- [ ] **Autenticación JWT**: Sistema de seguridad completo
+- [ ] **OpenAPI/Swagger**: Documentación automática de API
+- [ ] **Monitoring**: Métricas y observabilidad
+- [x] **Dockerización**: ✅ Completado
+- [x] **Frontend Responsive**: ✅ Completado
+- [x] **Testing Completo**: ✅ 51/51 tests
