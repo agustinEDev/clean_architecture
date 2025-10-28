@@ -1,355 +1,176 @@
-# 🏗️ Clean Architecture Learning Project
+# 🛒 Orders Microservice - Clean Architecture & DDD
 
-> Un proyecto educativo paso a paso para aprender Clean Architecture implementando un sistema de gestión de usuarios en Python y TypeScript.
+Un microservicio completo para la gestión de pedidos que aplica los principios de **Clean Architecture** y **Domain-Driven Design (DDD)**. El proyecto incluye una API REST con FastAPI, un frontend web funcional y un conjunto completo de tests que validan cada capa de la arquitectura.
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-4.0+-blue.svg)](https://typescriptlang.org)
-[![Tests](https://img.shields.io/badge/Tests-✅%20Passing-green.svg)](#testing)
-[![Clean Architecture](https://img.shields.io/badge/Architecture-Clean-brightgreen.svg)](#arquitectura)
+[![Tests](https://img.shields.io/badge/Tests-52%2F52%20✅-green.svg)](#-testing)
+[![DDD](https://img.shields.io/badge/DDD-Domain%20Driven%20Design-purple.svg)](#)
 
-## 📚 ¿Qué es Clean Architecture?
+## ✨ Funcionalidades Principales
 
-Clean Architecture es un patrón de diseño que separa el código en capas concéntricas, donde cada capa tiene una responsabilidad específica y las dependencias apuntan hacia el centro.
+- **API REST Completa**: Endpoints para crear órdenes, añadir artículos, y consultar órdenes.
+- **Frontend Elegante**: Interfaz web responsive y profesional para interactuar con la API.
+- **Domain-Driven Design**: Modelado del dominio con Value Objects, Entities y Domain Events.
+- **Arquitectura Dirigida por Eventos**: Los eventos de dominio (ej. `OrderCreated`) desacoplan la lógica.
+- **Inyección de Dependencias**: Un `Container` se encarga de construir y proveer las dependencias.
+- **Tests Unitarios y de Integración**: 36 tests que cubren todas las capas del microservicio.
+- **Logging Profesional**: Sistema de logging configurable con rotación de ficheros para un seguimiento detallado.
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    🌐 Frameworks & Drivers              │
-│  ┌─────────────────────────────────────────────────┐    │
-│  │              🔌 Interface Adapters              │    │
-│  │  ┌─────────────────────────────────────────┐    │    │
-│  │  │              💼 Use Cases               │    │    │
-│  │  │  ┌─────────────────────────────────┐    │    │    │
-│  │  │  │          🎯 Entities            │    │    │    │
-│  │  │  │                                 │    │    │    │
-│  │  │  └─────────────────────────────────┘    │    │    │
-│  │  └─────────────────────────────────────────┘    │    │
-│  └─────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────┘
-```
+## 🏗️ Arquitectura del Proyecto
 
-## 🎯 Objetivo del Proyecto
+El proyecto sigue estrictamente los principios de **Clean Architecture**, asegurando que la lógica de negocio (dominio) sea independiente de frameworks y detalles de implementación.
 
-Implementar el **mismo sistema de gestión de usuarios** en dos lenguajes diferentes para entender cómo Clean Architecture es **independiente del lenguaje** y las **ventajas** que proporciona.
+```mermaid
+graph TD;
+    subgraph "Presentation (Capa de Presentación)"
+        A["FastAPI Endpoints"]
+    end
+    subgraph "Application (Capa de Aplicación)"
+        B["Casos de Uso"]
+        C["DTOs"]
+        D["Ports (Interfaces)"]
+    end
+    subgraph "Domain (Capa de Dominio)"
+        E["Entidades"]
+        F["Value Objects"]
+        G["Eventos de Dominio"]
+    end
+    subgraph "Infrastructure (Capa de Infraestructura)"
+        H["Repositorios en Memoria"]
+        I["Servicios Externos"]
+        J["Bus de Eventos"]
+    end
 
-### ✨ Características del Sistema
-- ✅ Crear usuarios con validación de DNI español
-- ✅ Buscar usuarios por DNI
-- ✅ Listar todos los usuarios
-- ✅ Actualizar información de usuarios
-- ✅ Eliminar usuarios
+    A --> B
+    B --> D
+    B --> E
+    J -- Implementa --> D
+    H -- Implementa --> D
+    I -- Implementa --> D
+    E --> F
+    E --> G
 
-## 🐍 Implementación en Python
-
-### 📁 Estructura del Proyecto
-
-```
-CleanArchitecture/           # 🏗️ Raíz del proyecto
-├── scripts/                 # 🛠️ Scripts de desarrollo y CI/CD
-│   └── dev.py              # Script inteligente para validación y tests
-├── python_version/          # 🐍 Implementación en Python
-│   ├── entities/           # 🎯 Entidades del negocio
-│   │   └── users.py        # Clase User con validaciones
-│   ├── use_cases/          # 💼 Casos de uso
-│   │   ├── user_repository_interface.py
-│   │   ├── create_user_use_case.py
-│   │   ├── find_user_use_case.py
-│   │   ├── list_users_use_case.py
-│   │   ├── update_user_use_case.py
-│   │   └── delete_user_use_case.py
-│   ├── adapters/           # 🔌 Adaptadores
-│   │   ├── repositories/   # Acceso a datos
-│   │   │   └── file_user_repository.py
-│   │   └── controllers/    # Control de entrada (futura capa)
-│   ├── external/           # 🌐 Capa externa (configurada para futuro)
-│   ├── tests/              # 🧪 Tests completos por capa
-│   │   ├── __init__.py
-│   │   ├── test_entities/
-│   │   │   ├── __init__.py
-│   │   │   └── test_user.py
-│   │   ├── test_use_cases/
-│   │   │   ├── __init__.py
-│   │   │   ├── test_create_user_use_case.py
-│   │   │   ├── test_find_user_use_case.py
-│   │   │   ├── test_list_users_user_case.py
-│   │   │   ├── test_update_user_use_case.py
-│   │   │   └── test_delete_user_use_case.py
-│   │   └── test_adapters/
-│   │       ├── __init__.py
-│   │       └── test_file_user_repository.py
-│   └── main.py             # Aplicación principal funcional
-├── README.md               # 📖 Documentación completa
-└── .gitignore              # 🙈 Configuración Git
+    style E fill:#f9f,stroke:#333,stroke-width:2px
+    style F fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#f9f,stroke:#333,stroke-width:2px
 ```
 
-### 🎯 Capa 1: Entities
+### Flujo de un Caso de Uso: `AddItemToOrder`
 
-La entidad `User` encapsula las reglas de negocio fundamentales:
+Este diagrama de secuencia ilustra cómo las capas colaboran para añadir un artículo a una orden, respetando la regla de dependencia.
 
-- **Validación automática** en el constructor
-- **Inmutabilidad** después de la creación
-- **Validación de DNI español** con algoritmo real
+```mermaid
+sequenceDiagram
+    participant Client as 🌐 Cliente
+    participant API as 🚀 FastAPI API
+    participant UseCase as 💼 AddItemUseCase
+    participant OrderRepo as 📦 OrderRepository
+    participant Pricing as 💰 PricingService
+    participant Order as 🎯 Entidad Order
+    participant EventBus as 📢 EventBus
 
-```python
-# Ejemplo de uso
-user = User("Juan", "Pérez", "12345678Z")  # ✅ Válido
-user = User("", "Pérez", "12345678Z")      # ❌ ValueError
+    Client->>+API: POST /orders/{id}/items (sku, quantity)
+    API->>+UseCase: execute(dto)
+    UseCase->>+OrderRepo: get(order_id)
+    OrderRepo-->>-UseCase: devuelve Order
+    UseCase->>+Pricing: get_price(sku)
+    Pricing-->>-UseCase: devuelve Price
+    UseCase->>+Order: add_item(sku, quantity, price)
+    Order-->>-UseCase: (ItemAdded event creado)
+    UseCase->>+OrderRepo: save(order)
+    OrderRepo-->>-UseCase: 
+    UseCase->>+EventBus: publish_many(events)
+    EventBus-->>-UseCase: 
+    UseCase-->>-API: devuelve ResponseDTO
+    API-->>-Client: 200 OK {success: true}
 ```
 
-### 💼 Capa 2: Use Cases
+## 📁 Estructura de Ficheros
 
-Los casos de uso implementan la lógica específica de la aplicación:
+La organización de los ficheros refleja las capas de la arquitectura:
 
-#### ✅ CreateUserUseCase
-- Recibe datos primitivos (strings)
-- Crea y valida la entidad User  
-- Persiste usando el repositorio
-- Retorna el usuario creado
-
-```python
-use_case = CreateUserUseCase(repository)
-user = use_case.execute("Ana", "García", "87654321X")
+```
+orders_ms/
+├── domain/            # 🎯 Lógica de negocio pura (Entidades, Value Objects, Eventos).
+├── application/       # 💼 Orquestación (Casos de Uso, DTOs, Puertos/Interfaces).
+├── infrastructure/    # 🔧 Implementaciones concretas (Repositorios, Servicios, Bus de Eventos).
+├── static/            # 🎨 Frontend (HTML, CSS, JS).
+├── tests/             # 🧪 Tests por capas (domain, application, infrastructure, http).
+├── main.py            # 🚀 Capa de Presentación (API con FastAPI).
+├── container.py       # 📦 Inyección de Dependencias (Composition Root).
+├── scripts/dev_ms.py  # 🛠️ Script de desarrollo y testing.
+└── requirements.txt   # 📄 Dependencias del proyecto.
 ```
 
-#### ✅ FindUserUseCase
-- Busca un usuario específico por DNI
-- Retorna el usuario encontrado o None
-- Maneja casos donde el usuario no existe
+## 🚀 Cómo Empezar
 
-```python
-use_case = FindUserUseCase(repository)
-user = use_case.execute("87654321X")  # Retorna User o None
-```
-
-#### ✅ ListUsersUseCase
-- Lista todos los usuarios del sistema
-- Retorna una lista de usuarios (puede estar vacía)
-- Operación de solo lectura
-
-```python
-use_case = ListUsersUseCase(repository)
-users = use_case.execute()  # Retorna List[User]
-```
-
-#### ✅ UpdateUserUseCase
-- Actualiza información de un usuario existente
-- Permite modificar nombre y apellidos (DNI inmutable)
-- Valida existencia antes de actualizar
-- Lanza excepción si el usuario no existe
-
-```python
-use_case = UpdateUserUseCase(repository)
-user = use_case.execute("87654321X", "Ana María", "García López")
-```
-
-#### ✅ DeleteUserUseCase
-- Elimina un usuario del sistema por DNI
-- Valida existencia antes de eliminar
-- Lanza excepción si el usuario no existe
-- Operación irreversible
-
-```python
-use_case = DeleteUserUseCase(repository)
-use_case.execute("87654321X")  # Elimina el usuario
-```
-
-### 🔌 Capa 3: Interface Adapters
-
-Los adaptadores conectan las capas internas con el mundo exterior:
-
-#### ✅ FileUserRepository
-- **Persistencia en JSON**: Guarda usuarios en archivo local con formato legible
-- **JSON formateado**: Indentación automática y soporte de caracteres especiales
-- **Manejo de errores**: Archivos inexistentes o vacíos
-- **Implementación intercambiable**: Cumple el contrato de la interfaz
-- **CRUD completo**: Operaciones Create, Read, Update, Delete
-
-```python
-# El mismo caso de uso puede usar cualquier repositorio
-file_repo = FileUserRepository("users.json")
-memory_repo = InMemoryUserRepository()
-
-# Ambos funcionan exactamente igual
-use_case = CreateUserUseCase(file_repo)  # Persiste en archivo
-use_case = CreateUserUseCase(memory_repo)  # Solo en memoria
-```
-
-### �🔍 Características Técnicas
-
-#### Validación de DNI
-- ✅ Formato: 8 números + 1 letra
-- ✅ Algoritmo de verificación español
-- ✅ Cálculo del dígito de control
-
-#### Principios SOLID
-- **Single Responsibility**: Cada clase tiene una responsabilidad
-- **Dependency Inversion**: Los Use Cases dependen de abstracciones
-- **Interface Segregation**: Interfaces específicas y pequeñas
-- **Open/Closed**: Fácil agregar nuevos repositorios sin modificar código existente
-
-## 🛠️ Desarrollo y CI/CD
-
-### Script de Desarrollo Inteligente
-
-El proyecto incluye un sistema de desarrollo automatizado con `scripts/dev.py`:
+### 1. Configuración del Entorno
 
 ```bash
-# Ejecutar validación completa del proyecto
-python scripts/dev.py
+# 1. Navega al directorio del microservicio
+cd orders_ms
+
+# 2. (Recomendado) Crea y activa un entorno virtual
+python -m venv .venv
+source .venv/bin/activate
+
+# 3. Instala las dependencias
+pip install -r requirements.txt
 ```
 
-#### 🎯 Funcionalidades del Script de Desarrollo:
-- **🔍 Validación de Estructura**: Verifica que todos los archivos y carpetas estén presentes
-- **📊 Estadísticas del Proyecto**: Cuenta tests, casos de uso, documentación
-- **📝 Estado de Git**: Muestra cambios pendientes y rama actual  
-- **🧪 Ejecución Automática de Tests**: Ejecuta todos los tests desde la raíz
-- **✅ Exit Codes Apropiados**: 0 para éxito, 1 para errores (compatible con CI/CD)
-
-#### 🚀 Integración con Workflows
-Compatible con herramientas de automatización como **Warp Drive**:
-```bash
-wf-dev-push-unitest  # Workflow automático: validar → test → commit → push
-```
-
-El script valida tanto archivos de la raíz (README, .gitignore) como de `python_version/`, asegurando que no se pierdan cambios en ninguna parte del proyecto.
-
-## 🧪 Testing
-
-### Estrategia de Testing por Capas
+### 2. Ejecutar el Microservicio
 
 ```bash
-# Validación completa + tests (RECOMENDADO para desarrollo)
-python scripts/dev.py
-
-# Ejecutar solo tests desde python_version/
-cd python_version
-python -m unittest discover tests/ -v
-
-# O ejecutar tests por capa individualmente
-cd python_version
-python tests/test_entities/test_user.py
-python tests/test_use_cases/test_create_user_use_case.py
-python tests/test_use_cases/test_find_user_use_case.py
-python tests/test_use_cases/test_list_users_user_case.py
-python tests/test_use_cases/test_update_user_use_case.py
-python tests/test_use_cases/test_delete_user_use_case.py
-python tests/test_adapters/test_file_user_repository.py
-
-# Ejecutar la aplicación completa con CRUD funcional
-cd python_version
+# Inicia el servidor web de FastAPI
 python main.py
 ```
 
-### 🎭 Test Strategy
-- **InMemoryUserRepository**: Mock para testing de Use Cases
-- **FileUserRepository Tests**: Verificación de persistencia real
-- **Temporary Files**: Tests aislados sin efectos secundarios
-- **Cobertura completa**: Casos válidos, inválidos y edge cases
-- **Testing por capas**: Cada capa se testea independientemente
+Una vez iniciado, puedes:
+- **Abrir el frontend**: `http://localhost:8000/app`
+- **Interactuar con la API**: `http://localhost:8000/orders`
 
-## 📈 Progreso del Proyecto
+### Ejecutar los Tests
 
-### ✅ Completado
-- [x] **Entities**: User con validación completa de DNI español
-- [x] **Use Cases CRUD Completo**: 
-  - ✅ CreateUserUseCase con inyección de dependencias
-  - ✅ FindUserUseCase para búsqueda por DNI
-  - ✅ ListUsersUseCase para listar todos los usuarios
-  - ✅ UpdateUserUseCase para modificar usuarios existentes
-  - ✅ DeleteUserUseCase para eliminar usuarios
-- [x] **Repository Interface**: Contrato bien definido y desacoplado
-- [x] **Adapters**: FileUserRepository con persistencia JSON formateada
-- [x] **Testing Completo**: 
-  - ✅ Tests unitarios para User (casos válidos/inválidos)
-  - ✅ Tests para todos los Use Cases con repositorio mock
-  - ✅ Tests de casos de éxito y manejo de errores
-  - ✅ Tests de integración para FileUserRepository
-  - ✅ Tests de persistencia real en archivos
-  - ✅ Cobertura completa de operaciones CRUD
-- [x] **Aplicación Principal**: Main.py con funcionalidad CRUD completa
-- [x] **Mejoras de Calidad**: 
-  - ✅ JSON formateado con indentación y caracteres especiales
-  - ✅ Manejo consistente de errores
-  - ✅ Arquitectura limpia y código mantenible
-- [x] **Sistema de Desarrollo y CI/CD**:
-  - ✅ Script de desarrollo inteligente (scripts/dev.py)
-  - ✅ Validación automática de estructura del proyecto
-  - ✅ Ejecución automatizada de tests desde cualquier ubicación
-  - ✅ Integración con workflows de automatización (Warp Drive)
-  - ✅ Detección de cambios en todo el repositorio
-  - ✅ Exit codes apropiados para CI/CD
-
-### 📋 Próximas Mejoras (Opcionales)
-- [ ] **Controllers**: Capa de presentación (CLI interactiva/Web)
-- [ ] **External**: Base de datos real (SQLite/PostgreSQL) 
-- [ ] **Implementación en TypeScript**: Misma funcionalidad en otro lenguaje
-- [ ] **Comparación entre lenguajes**: Análisis de diferencias y similitudes
-- [ ] **Documentación avanzada**: Patrones aprendidos y mejores prácticas
-
-## 🎓 Conceptos Aprendidos
-
-### 🏗️ Arquitectura
-- ✅ **Separación en capas** con responsabilidades claras
-- ✅ **Inversión de dependencias** con interfaces
-- ✅ **Independencia de frameworks** y bases de datos
-
-### 🔧 Técnicas
-- ✅ **Inyección de dependencias** manual
-- ✅ **Repository Pattern** para abstracción de datos
-- ✅ **Value Objects** con validación automática
-- ✅ **Test-Driven Development** por capas
-
-### 💡 Beneficios Observados
-- ✅ **Testabilidad**: Cada capa se puede testear aisladamente con mocks
-- ✅ **Mantenibilidad**: Cambios localizados por responsabilidad
-- ✅ **Flexibilidad**: Cambiar de archivo a base de datos sin tocar lógica
-- ✅ **Comprensibilidad**: Flujo de dependencias claro hacia el centro
-- ✅ **Reutilización**: El mismo Use Case funciona con cualquier repositorio
-- ✅ **Evolución**: Fácil agregar nuevas funcionalidades sin romper existentes
-
-## 🚀 Cómo ejecutar el proyecto
+El proyecto incluye un script de desarrollo para validar la estructura y ejecutar todos los tests.
 
 ```bash
-# Clonar el repositorio
-git clone <tu-repo>
-cd CleanArchitecture
+# Ejecuta el script de desarrollo (tests + validaciones)
+python dev_ms.py
 
-# Opción 1: Validación completa + tests (RECOMENDADO)
-python scripts/dev.py
-
-# Opción 2: Solo ejecutar la aplicación
-cd python_version
-python main.py
-
-# Opción 3: Solo ejecutar tests
-cd python_version
-python -m unittest discover tests/ -v
-
-# Opción 4: Desarrollo con workflow automatizado (requiere Warp Drive)
-wf-dev-push-unitest  # Valida, testea, commitea y hace push automáticamente
+# O ejecuta los tests directamente con unittest
+python -m unittest discover tests -v
 ```
 
-### 🎯 Flujo de Desarrollo Recomendado
+## 📖 Conceptos Clave Implementados
 
-1. **🔍 Validar**: `python scripts/dev.py` (estructura + tests)
-2. **💻 Desarrollar**: Hacer cambios en cualquier parte del proyecto  
-3. **🧪 Verificar**: `python scripts/dev.py` (validar cambios)
-4. **📝 Commitear**: `git add . && git commit -m "mensaje"`
-5. **🚀 Push**: `git push`
+### Capas de la Arquitectura
 
-O usar el workflow automatizado: `wf-dev-push-unitest` que hace todo en un comando.
+1.  **Domain**: El corazón del software. Contiene los `Value Objects` (SKU, Price), la entidad `Order` (Aggregate Root) y los `Domain Events` (OrderCreated). No tiene dependencias externas.
+2.  **Application**: Orquesta la lógica de negocio. Contiene los `Use Cases` (CreateOrderUseCase), los `Ports` (interfaces como `OrderRepository`) y los `DTOs` para la transferencia de datos.
+3.  **Infrastructure**: Implementa los puertos definidos en la capa de aplicación. Contiene `InMemoryOrderRepository`, `StaticPricingService` y el `InMemoryEventBus`.
+4.  **Presentation (main.py)**: Expone la funcionalidad al mundo exterior a través de una API REST (FastAPI). Es el punto de entrada de las peticiones.
 
-## 🤝 Contribuciones
+### Frontend
 
-Este es un proyecto educativo. Si encuentras mejoras o tienes sugerencias, ¡son bienvenidas!
+La interfaz de usuario está construida con HTML, CSS y JavaScript puro, demostrando cómo un cliente puede consumir la API.
 
-## 📚 Referencias
+- **Diseño Profesional**: Estilo minimalista en blanco y negro.
+- **Responsive**: Se adapta a dispositivos móviles y de escritorio.
+- **Funcionalidades**:
+  - Creación de órdenes.
+  - Adición de artículos a través de desplegables que se actualizan dinámicamente.
+  - Visualización de resúmenes de órdenes con un layout optimizado.
+  - Historial de acciones persistido en `localStorage`.
 
-- [Clean Architecture - Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Clean Architecture Book](https://www.amazon.com/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164)
-- [Hexagonal Architecture](https://alistair.cockburn.us/hexagonal-architecture/)
+### Testing
 
----
+- **Tests de Dominio**: Verifican la lógica de negocio pura en las entidades y value objects.
+- **Tests de Aplicación**: Prueban los casos de uso con `mocks` para las dependencias externas (repositorios, servicios).
+- **Tests de Infraestructura**: Aseguran que las implementaciones concretas (como el `InMemoryOrderRepository` y el `Container`) funcionan como se espera.
 
-⭐ **¿Te está ayudando este proyecto?** ¡Dale una estrella en GitHub!
+## 🛠️ Próximos Pasos
 
-📝 **Documentando el aprendizaje paso a paso** - Cada commit representa un concepto aprendido
+- [ ] **Persistencia en Base de Datos**: Reemplazar `InMemoryOrderRepository` por una implementación con PostgreSQL.
+- [ ] **Autenticación y Autorización**: Proteger los endpoints de la API con JWT.
+- [ ] **Documentación de API**: Generar documentación automática con OpenAPI/Swagger.
+- [ ] **Dockerización**: Crear un `Dockerfile` para facilitar el despliegue del microservicio.

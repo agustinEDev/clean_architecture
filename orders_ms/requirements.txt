@@ -1,0 +1,13 @@
+# Dependencias HTTP para Orders Microservice
+
+# Framework web principal
+fastapi==0.104.1
+
+# Servidor web ASGI para ejecutar FastAPI
+uvicorn[standard]==0.24.0
+
+# Validación de datos (incluido con FastAPI pero lo especificamos)
+pydantic==2.5.0
+
+# Para testing de endpoints HTTP
+httpx==0.25.2

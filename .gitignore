@@ -1,3 +1,7 @@
+# =============================================================================
+# PYTHON PROJECT (python_version/)
+# =============================================================================
+
 # Virtual environments
 python_version/.venv/
 .venv/
@@ -11,7 +15,24 @@ python_version/**/*.pyc
 # Data files (application specific)
 python_version/users.json
 python_version/*.json
-*.json
+
+# =============================================================================
+# ORDERS MICROSERVICE (orders_ms/)
+# =============================================================================
+
+# Logs
+orders_ms/logs/*.log
+orders_ms/logs/*.log.*
+
+# Virtual environments (orders_ms specific)
+orders_ms/.venv/
+
+# =============================================================================
+# SYSTEM FILES
+# =============================================================================
 
 # macOS
 .DS_Store
+
+# General JSON data files (if needed)
+*.json

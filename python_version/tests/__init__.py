@@ -1,1 +1,0 @@
-# Tests package for Clean Architecture project

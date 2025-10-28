@@ -1,1 +1,0 @@
-# Adapters tests package
