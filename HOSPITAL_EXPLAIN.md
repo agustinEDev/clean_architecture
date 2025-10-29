@@ -434,49 +434,6 @@ class Order:
         self._domain_events.clear()          # Los limpia de la entidad  
         return events                        # Los devuelve para publicar
 ```
-```python
-# order.py - La Entidad Principal
-class Order:
-    def __init__(self, customer_name: str):
-        self.order_id = OrderId.generate()       # 🏷️ "Cada orden única"
-        self.customer_name = customer_name       # 👤 "Juan Pérez"
-        self._items = []                         # 💊 "Lista de tratamientos"
-        self._events = []                        # 📢 "Historial importante"
-        self.status = "CREATED"                  # 📊 "Estado actual"
-        self.total = Price(Decimal("0.00"))      # � "Costo total"
-        
-    def add_item(self, sku: Sku, quantity: Quantity, price: Price):
-        # 🛡️ REGLAS MÉDICAS - ¡Nunca se rompen!
-        if quantity.value <= 0:
-            raise ValueError("🚫 La cantidad debe ser positiva!")
-        if not sku.value or sku.value.strip() == "":
-            raise ValueError("🚫 Debe especificar el tratamiento!")
-            
-        # ✅ Si pasa las validaciones médicas
-        item = OrderItem(sku, quantity, price)
-        self._items.append(item)
-        
-        # 🧮 Recalcular el costo total
-        self._recalculate_total()
-        
-        # 📢 "¡IMPORTANTE! Se agregó tratamiento"
-        self._events.append(ItemAddedEvent(
-            order_id=self.order_id.value,
-            sku=sku.value,
-            quantity=quantity.value,
-            price=price.value
-        ))
-        
-    def get_treatment_summary(self) -> str:
-        # 👨‍⚕️ "Aplicando conocimiento médico puro"
-        if len(self._items) == 0:
-            return "Sin tratamientos asignados"
-        elif len(self._items) == 1:
-            return f"Tratamiento único: {self._items[0].sku.value}"
-        else:
-            return f"Tratamiento múltiple: {len(self._items)} procedimientos"
-```
-
 #### 💎 **2. Los Valores Médicos** (`domain/value_objects/`) - Objetos de Valor
 ```python
 # price.py - "Costo de Tratamiento con Moneda"
