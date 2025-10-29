@@ -22,7 +22,7 @@ const PRODUCTS = { // Lista unificada de productos
     'MOUSE456': '🖱️ Mouse',
     'KEYBOARD789': '⌨️ Keyboard',
     'MONITOR147': '🖥️ Monitor',
-    'MOBOARD321': 'Motherboard',
+    'MOBOARD321': '🔧 Motherboard',
     'HEADPHONE654': '🎧 Headphones',
     'GRAPHICS987': '🎮 Graphics Card',
     'PRINTER258': '🖨️ Printer',
