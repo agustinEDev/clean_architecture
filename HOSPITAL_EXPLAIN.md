@@ -258,11 +258,62 @@ Cada coordinador tiene un asistente que:
 - 💾 **Guarda** todos los cambios
 - 🔐 **Cierra** todo automáticamente (¡NUNCA se olvida!)
 
-### 📂 **Archivos Reales:**
+### 🎭 **Los Contratos del Hospital** (`application/ports/`) - Interfaces
+Los coordinadores también definen **contratos** que deben cumplir los Servicios de Apoyo:
+
+```python
+# unit_of_work.py - "Contrato del Asistente de Expedientes"
+from abc import ABC, abstractmethod
+
+class UnitOfWork(ABC):
+    """🤝 Contrato: Todo asistente DEBE saber hacer esto"""
+    
+    @abstractmethod
+    def __enter__(self):
+        """🔐 Abrir expedientes de órdenes médicas"""
+        pass
+        
+    @abstractmethod  
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """🔐 Cerrar expedientes automáticamente"""
+        pass
+        
+    @abstractmethod
+    def commit(self):
+        """💾 Guardar todos los cambios en el historial"""
+        pass
+        
+    @abstractmethod
+    def rollback(self):
+        """↩️ Cancelar todo si hay error médico"""  
+        pass
+
+# order_repository.py - "Contrato del Archivista"
+class OrderRepository(ABC):
+    """🤝 Contrato: Todo archivista DEBE saber hacer esto"""
+    
+    @abstractmethod
+    def save(self, order: Order):
+        """💾 Guardar orden médica en el archivo"""
+        pass
+        
+    @abstractmethod
+    def get(self, order_id: OrderId) -> Order:
+        """� Buscar orden médica en el archivo"""
+        pass
+        
+    @abstractmethod
+    def list_all(self) -> list[Order]:
+        """📋 Listar todas las órdenes médicas"""
+        pass
+```
+
+### �📂 **Archivos Reales:**
 - `application/use_cases/create_order_use_case.py` - Coordinador de nuevas órdenes
 - `application/use_cases/add_item_to_order_use_case.py` - Coordinador de tratamientos  
 - `application/use_cases/get_order_use_case.py` - Coordinador de consultas
 - `application/use_cases/list_orders_use_case.py` - Coordinador de reportes
+- `application/ports/unit_of_work.py, order_repository.py` - Los contratos que otros deben cumplir
 
 ---
 
@@ -508,67 +559,18 @@ class ItemAddedEvent:
         return f"📢 ¡Se agregó {self.quantity}x {self.sku} (${self.price}) a orden {self.order_id}!"
 ```
 
-#### 🎭 **4. Los Contratos Médicos** (`application/ports/`) - Interfaces
-```python
-# unit_of_work.py - "Contrato del Asistente de Expedientes"
-from abc import ABC, abstractmethod
-
-class UnitOfWork(ABC):
-    """🤝 Contrato: Todo asistente DEBE saber hacer esto"""
-    
-    @abstractmethod
-    def __enter__(self):
-        """🔐 Abrir expedientes de órdenes médicas"""
-        pass
-        
-    @abstractmethod  
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """🔐 Cerrar expedientes automáticamente"""
-        pass
-        
-    @abstractmethod
-    def commit(self):
-        """💾 Guardar todos los cambios en el historial"""
-        pass
-        
-    @abstractmethod
-    def rollback(self):
-        """↩️ Cancelar todo si hay error médico"""  
-        pass
-
-# order_repository.py - "Contrato del Archivista"
-class OrderRepository(ABC):
-    """🤝 Contrato: Todo archivista DEBE saber hacer esto"""
-    
-    @abstractmethod
-    def save(self, order: Order):
-        """💾 Guardar orden médica en el archivo"""
-        pass
-        
-    @abstractmethod
-    def get(self, order_id: OrderId) -> Order:
-        """🔍 Buscar orden médica en el archivo"""
-        pass
-        
-    @abstractmethod
-    def list_all(self) -> list[Order]:
-        """📋 Listar todas las órdenes médicas"""
-        pass
-```
-
 ### 🔄 **¿Cómo Funciona el Conocimiento Médico?**
 1. **Recibe solicitud médica:** `CreateOrderRequestDTO(customer_id="CUST-12345")`
 2. **Aplica conocimiento puro:** ¿Es un ID de cliente válido? ¿Formato correcto?
-3. **Crea orden médica:** `Order(customer_name="Juan Pérez")` → Orden válida
-4. **Genera eventos:** `📢 OrderCreatedEvent(order_id, customer_name)`
-5. **Define protocolos:** "Servicios, necesitan implementar `OrderRepository`"
+3. **Crea orden médica:** `Order(customer_id="CUST-12345")` → Orden válida
+4. **Genera eventos:** `📢 OrderCreatedEvent(order_id, customer_id)`
+5. **Aplica reglas de negocio:** Validaciones en value objects, lógica de dominio
 6. **Devuelve conocimiento puro:** Objeto médico sin contaminación técnica
 
 ### 📂 **Archivos Reales del Conocimiento Médico:**
 - `domain/entities/order.py` - La entidad principal (órdenes médicas)
 - `domain/value_objects/price.py, quantity.py, sku.py, order_id.py` - Los valores médicos exactos
 - `domain/events/order_created.py, item_added.py` - Los eventos médicos
-- `application/ports/unit_of_work.py, order_repository.py` - Los contratos que otros deben cumplir
 
 ---
 
