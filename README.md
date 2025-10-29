@@ -99,12 +99,13 @@ python main.py
 - **🎯 Domain-Driven Design**: Value Objects, Entidades y Eventos de dominio
 - **📢 Event-Driven**: Arquitectura dirigida por eventos (`OrderCreated`, `ItemAdded`)
 - **💉 Dependency Injection**: Container IoC para gestión de dependencias
-- **� Unit of Work Pattern**: Gestión automática de transacciones y sesiones SQLAlchemy
-- **�🗄️ Persistencia PostgreSQL**: Base de datos relacional con SQLAlchemy ORM
+- **🔄 Unit of Work Pattern**: Gestión automática de transacciones y sesiones SQLAlchemy
+- **🛡️ Manejo de Errores Robusto**: HTTPException con códigos apropiados (404, 500) y logging seguro
+- **🗄️ Persistencia PostgreSQL**: Base de datos relacional con SQLAlchemy ORM
 - **🧪 Testing Completo**: 52/52 tests unitarios y de integración
 - **🐳 Docker Multi-Service**: Containerización con API + PostgreSQL
 - **🎯 Container Inteligente**: Detección automática de entorno (testing vs producción)
-- **📝 Logging Avanzado**: Sistema de logging con rotación de archivos
+- **📝 Logging Estructurado**: Sistema avanzado con loggers por capa, rotación de archivos y manejo de errores
 
 ## 🏗️ Arquitectura del Proyecto
 
@@ -458,6 +459,63 @@ def execute(self, request_dto):
 - 🔒 **Transacciones Seguras**: Rollback automático en caso de errores
 - 📐 **Consistencia**: Mismo patrón en todos los use cases
 - 🧪 **Testing Robusto**: Implementación InMemory para tests
+
+### 📝 Logging Estructurado y Manejo de Errores
+
+**Sistema de Logging Avanzado:** El proyecto implementa logging estructurado por capas con configuración profesional:
+
+```python
+# config/logging_config.py - Configuración por capas
+'loggers': {
+    'orders_ms.domain': {'level': 'DEBUG', 'handlers': ['console', 'file']},
+    'orders_ms.application': {'level': 'DEBUG', 'handlers': ['console', 'file']},
+    'orders_ms.infrastructure': {'level': 'DEBUG', 'handlers': ['console', 'file']}
+}
+
+# Rotación automática de archivos (10MB, 5 backups)
+'handlers': {
+    'file': {
+        'class': 'logging.handlers.RotatingFileHandler',
+        'filename': 'logs/orders_ms_20241029.log',
+        'maxBytes': 10485760,  # 10MB
+        'backupCount': 5
+    }
+}
+```
+
+**Manejo de Errores HTTP:**
+```python
+# Ejemplo: GET /orders/ORDER-INEXISTENTE
+@app.get("/orders/{order_id}")
+def get_order(order_id: str):
+    try:
+        response_dto = use_case.execute(dto)
+        if not response_dto:
+            logger.warning(f"Order not found: {order_id}")  # 📝 Log apropiado
+            raise HTTPException(status_code=404, detail=f"Order {order_id} not found")
+    except HTTPException:
+        raise  # Re-lanzar códigos específicos
+    except Exception as e:
+        logger.error(f"Internal error: {e}", exc_info=True)  # 📝 Stack trace completo
+        raise HTTPException(status_code=500, detail="Internal server error")
+```
+
+**Logs en tiempo real:**
+```bash
+# Ver logs del container
+docker logs orders-microservice -f
+
+# Resultado:
+# WARNING - main - Order not found: ORDER-INEXISTENTE
+# INFO: 172.18.0.1:57348 - "GET /orders/ORDER-INEXISTENTE HTTP/1.1" 404 Not Found
+```
+
+**Características del sistema de logging:**
+- 🎯 **Loggers específicos**: Cada capa (`domain`, `application`, `infrastructure`) tiene su logger
+- 📊 **Niveles apropiados**: `WARNING` para 404, `ERROR` para 500, `INFO` para operaciones exitosas
+- 🔒 **Seguridad**: No expone detalles internos al cliente, pero los registra para debugging
+- 📁 **Archivos rotatorios**: Logs persistentes con rotación automática (10MB, 5 backups)
+- 🐳 **Container-friendly**: Logs visibles tanto en Docker como en archivos locales
 
 ### 🌐 Variables de Entorno
 
