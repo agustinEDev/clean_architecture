@@ -47,7 +47,7 @@ Imagina **"HOSPITAL SAN CÓDIGO"**, el hospital más organizado del mundo. Cada 
 ### 🎯 **¿Qué son los DTOs?**
 Son como **formularios médicos especializados** que cada planta usa para comunicarse sin mezclar información privada o innecesaria.
 
-### 📝 **Los 8 Formularios Reales del Hospital:**
+### 📝 **Los 9 Formularios Reales del Hospital:**
 
 #### 📥 **1. FORMULARIOS DE ADMISIÓN** - DTOs de Entrada (4)
 ```python
