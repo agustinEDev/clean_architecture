@@ -7,6 +7,8 @@ from application.use_cases.create_order_use_case import CreateOrderUseCase
 from application.use_cases.add_item_to_order_use_case import AddItemToOrderUseCase
 from application.use_cases.get_order_use_case import GetOrderUseCase
 from application.use_cases.list_orders_use_case import ListOrdersUseCase
+from infrastructure.database.in_memory_unit_of_work import InMemoryUnitOfWork
+from infrastructure.database.sqlalchemy_unit_of_work import SQLAlchemyUnitOfWork
 
 class Container:
     """
@@ -53,23 +55,32 @@ class Container:
         else:
             # InMemory para testing
             return self._repository
+        
+    def _get_unit_of_work(self):
+        """Obtiene el Unit of Work apropiado"""
+        if hasattr(self, '_session_factory'):
+            # PostgreSQL Unit of Work
+            return SQLAlchemyUnitOfWork(self._session_factory)
+        else:
+            # InMemory Unit of Work
+            return InMemoryUnitOfWork(self._repository)
     
     def create_order_use_case(self) -> CreateOrderUseCase:
         """Retorna caso de uso configurado para crear órdenes"""
-        return CreateOrderUseCase(self._get_repository(), self._event_bus)
+        return CreateOrderUseCase(self._get_unit_of_work(), self._event_bus)
     
     def add_item_use_case(self) -> AddItemToOrderUseCase:
         """Retorna caso de uso configurado para añadir items"""
-        return AddItemToOrderUseCase(self._get_repository(), self._pricing_service, self._event_bus)
-    
+        return AddItemToOrderUseCase(self._get_unit_of_work(), self._pricing_service, self._event_bus)
+
     def get_order_use_case(self) -> GetOrderUseCase:
         """Retorna caso de uso configurado para obtener órdenes"""
-        return GetOrderUseCase(self._get_repository())
-    
+        return GetOrderUseCase(self._get_unit_of_work())
+
     def list_orders_use_case(self) -> ListOrdersUseCase:
         """Retorna caso de uso configurado para listar todas las órdenes"""
-        return ListOrdersUseCase(self._get_repository())
-    
+        return ListOrdersUseCase(self._get_unit_of_work())
+
     # Métodos de acceso a infrastructure (útiles para testing)
     def get_repository(self):
         """Acceso al repositorio (útil para tests)"""

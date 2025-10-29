@@ -89,6 +89,7 @@ python main.py
 - **🎯 Domain-Driven Design** - Modelado centrado en el dominio del negocio
 - **🔌 Dependency Injection** - Inversión de control y desacoplamiento
 - **📢 Event-Driven Architecture** - Comunicación mediante eventos de dominio
+- **🔄 Unit of Work Pattern** - Gestión de transacciones y eliminación de memory leaks
 
 ## ✨ Funcionalidades Principales
 
@@ -98,7 +99,8 @@ python main.py
 - **🎯 Domain-Driven Design**: Value Objects, Entidades y Eventos de dominio
 - **📢 Event-Driven**: Arquitectura dirigida por eventos (`OrderCreated`, `ItemAdded`)
 - **💉 Dependency Injection**: Container IoC para gestión de dependencias
-- **🗄️ Persistencia PostgreSQL**: Base de datos relacional con SQLAlchemy ORM
+- **� Unit of Work Pattern**: Gestión automática de transacciones y sesiones SQLAlchemy
+- **�🗄️ Persistencia PostgreSQL**: Base de datos relacional con SQLAlchemy ORM
 - **🧪 Testing Completo**: 52/52 tests unitarios y de integración
 - **🐳 Docker Multi-Service**: Containerización con API + PostgreSQL
 - **🎯 Container Inteligente**: Detección automática de entorno (testing vs producción)
@@ -117,6 +119,7 @@ graph TD;
         B["Casos de Uso"]
         C["DTOs"]
         D["Ports (Interfaces)"]
+        UOW["🔄 Unit of Work Port"]
     end
     subgraph "Domain (Capa de Dominio)"
         E["Entidades"]
@@ -129,6 +132,8 @@ graph TD;
         I["Servicios Externos"]
         J["Bus de Eventos"]
         K["Container Inteligente"]
+        UOW1["🔄 InMemory UoW"]
+        UOW2["🔄 SQLAlchemy UoW"]
     end
     subgraph "Database (Persistencia)"
         L["PostgreSQL 13"]
@@ -136,14 +141,19 @@ graph TD;
     end
 
     A --> B
+    B --> UOW
     B --> D
     B --> E
     J -- Implementa --> D
+    UOW1 -- Implementa --> UOW
+    UOW2 -- Implementa --> UOW
+    UOW1 --> H
+    UOW2 --> H2
     H -- Implementa --> D
     H2 -- Implementa --> D
     I -- Implementa --> D
-    K --> H
-    K --> H2
+    K --> UOW1
+    K --> UOW2
     H2 --> M
     M --> L
     E --> F
@@ -152,6 +162,9 @@ graph TD;
     style E fill:#f9f,stroke:#333,stroke-width:2px
     style F fill:#f9f,stroke:#333,stroke-width:2px
     style G fill:#f9f,stroke:#333,stroke-width:2px
+    style UOW fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style UOW1 fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style UOW2 fill:#e1f5fe,stroke:#01579b,stroke-width:2px
 ```
 
 ### Flujo de un Caso de Uso: `AddItemToOrder`
@@ -163,21 +176,40 @@ sequenceDiagram
     participant Client as 🌐 Cliente
     participant API as 🚀 FastAPI API
     participant UseCase as 💼 AddItemUseCase
+    participant UoW as 🔄 Unit of Work
     participant OrderRepo as 📦 OrderRepository
     participant Pricing as 💰 PricingService
     participant Order as 🎯 Entidad Order
     participant EventBus as 📢 EventBus
+    participant DB as 🗄️ SQLAlchemy Session
 
     Client->>+API: POST /orders/{id}/items (sku, quantity)
     API->>+UseCase: execute(dto)
-    UseCase->>+OrderRepo: get(order_id)
-    OrderRepo-->>-UseCase: devuelve Order
+    Note over UseCase,UoW: 🔄 Context Manager Pattern
+    UseCase->>+UoW: __enter__ (with statement)
+    UoW->>+DB: create_session()
+    UoW->>UoW: self.orders = PostgreSQLRepo(session)
+    UoW-->>-UseCase: Unit of Work iniciado
+    
+    UseCase->>+UoW: uow.orders.get(order_id)
+    UoW->>+OrderRepo: get(order_id)
+    OrderRepo-->>-UoW: devuelve Order
+    UoW-->>-UseCase: devuelve Order
     UseCase->>+Pricing: get_price(sku)
     Pricing-->>-UseCase: devuelve Price
     UseCase->>+Order: add_item(sku, quantity, price)
     Order-->>-UseCase: (ItemAdded event creado)
-    UseCase->>+OrderRepo: save(order)
-    OrderRepo-->>-UseCase: 
+    UseCase->>+UoW: uow.orders.save(order)
+    UoW->>+OrderRepo: save(order)
+    OrderRepo-->>-UoW: 
+    UoW-->>-UseCase: 
+    
+    Note over UseCase,DB: 🔄 Transacción automática
+    UseCase->>+UoW: __exit__ (fin with statement)
+    UoW->>+DB: commit()
+    UoW->>+DB: close()
+    UoW-->>-UseCase: Recursos liberados
+    
     UseCase->>+EventBus: publish_many(events)
     EventBus-->>-UseCase: 
     UseCase-->>-API: devuelve ResponseDTO
@@ -312,11 +344,13 @@ El proyecto implementa **doble persistencia** con Clean Architecture:
 ```mermaid
 graph TD
     subgraph "🧪 Testing Environment"
-        T1[InMemoryRepository] --> T2[Dict en Memoria]
+        T1[🔄 InMemoryUnitOfWork] --> T2[InMemoryRepository]
+        T2 --> T3[Dict en Memoria]
     end
     subgraph "🐳 Production Environment" 
-        P1[PostgreSQLRepository] --> P2[SQLAlchemy ORM]
-        P2 --> P3[PostgreSQL 13]
+        P1[🔄 SQLAlchemyUnitOfWork] --> P2[PostgreSQLRepository]
+        P2 --> P3[SQLAlchemy ORM]
+        P3 --> P4[PostgreSQL 13]
     end
     subgraph "🎯 Container Inteligente"
         C1[Environment Detection] --> T1
@@ -324,7 +358,15 @@ graph TD
     end
     
     U[Use Cases] --> C1
+    
+    note1["🔄 Context Manager:<br/>with uow:<br/>  # transacción automática"]
+    T1 -.-> note1
+    P1 -.-> note1
+    
     style C1 fill:#f9f,stroke:#333,stroke-width:2px
+    style T1 fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style P1 fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    style note1 fill:#fff3e0,stroke:#ff8f00,stroke-width:1px
 ```
 
 ### 🏗️ Estructura de Base de Datos
@@ -373,21 +415,49 @@ class OrderModel(Base):
     )
 ```
 
-### 🔄 Gestión de Sesiones
+### 🔄 Unit of Work Pattern
 
-**Patrón Session-per-Request:** Nueva sesión SQLAlchemy para cada operación, evitando problemas de concurrencia:
+**Gestión Automática de Transacciones:** El proyecto implementa el **Unit of Work pattern** para gestionar transacciones y eliminar memory leaks de SQLAlchemy:
 
 ```python
-# Container inteligente crea nueva sesión por request
-def _get_repository(self):
-    if hasattr(self, '_session_factory'):
-        # PostgreSQL: nueva sesión cada vez
-        db_session = self._session_factory()
-        return PostgreSQLRepository(db_session)
-    else:
-        # InMemory para testing
-        return self._repository
+# application/ports/unit_of_work.py - Interface
+class UnitOfWork(ABC):
+    orders: OrderRepository
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None:
+            self.rollback()
+        else:
+            self.commit()
+        self.close()
+
+# infrastructure/database/sqlalchemy_unit_of_work.py - Implementación
+class SQLAlchemyUnitOfWork(UnitOfWork):
+    def __enter__(self):
+        self._session = self._session_factory()
+        self.orders = PostgreSQLOrderRepository(self._session)
+        return super().__enter__()
 ```
+
+**Uso en Use Cases con Context Manager:**
+```python
+# Transacciones automáticas y limpieza de recursos
+def execute(self, request_dto):
+    with self.uow:  # 🔄 Abre sesión y repositorio
+        order = self.uow.orders.get(request_dto.order_id)
+        # ... lógica de negocio ...
+        self.uow.orders.save(order)
+    # ✅ Commit automático y sesión cerrada
+```
+
+**Beneficios del Unit of Work:**
+- 🚫 **Memory Leaks Eliminados**: Sessions SQLAlchemy se cierran automáticamente
+- 🔒 **Transacciones Seguras**: Rollback automático en caso de errores
+- 📐 **Consistencia**: Mismo patrón en todos los use cases
+- 🧪 **Testing Robusto**: Implementación InMemory para tests
 
 ### 🌐 Variables de Entorno
 
@@ -415,22 +485,23 @@ python ../scripts/dev.py
 python -m unittest discover tests -v
 ```
 
-### Cobertura de Tests: 52/52 ✅
+### Cobertura de Tests: 52/52 ✅ + Unit of Work
 
 | Capa | Tests | Cobertura |
 |------|-------|-----------|
 | **Domain** | 12 tests | Entidades y Value Objects |
-| **Application** | 16 tests | Casos de Uso y DTOs |
-| **Infrastructure** | 20 tests | Repositorios (InMemory + PostgreSQL) y Servicios |
+| **Application** | 16 tests | Casos de Uso con Unit of Work Pattern |
+| **Infrastructure** | 20 tests | Repositorios, UoW (InMemory + SQLAlchemy) y Servicios |
 | **HTTP** | 4 tests | Endpoints de la API |
 
 ### 🎯 Testing Inteligente
 
 El sistema de testing se adapta automáticamente al entorno:
 
-- **🧪 Tests locales**: Usa `InMemoryRepository` (rápido, sin dependencias)
-- **🐳 Tests con PostgreSQL**: Skip automático si SQLAlchemy no está disponible
-- **📊 Container testing**: Detección de entorno para usar el repositorio correcto
+- **🧪 Tests locales**: Usa `InMemoryUnitOfWork` (rápido, sin dependencias)
+- **🐳 Tests con PostgreSQL**: `SQLAlchemyUnitOfWork` con transacciones reales
+- **📊 Container testing**: Detección automática de entorno (testing vs producción)
+- **🔄 Unit of Work Testing**: Mocks inteligentes para context managers y transacciones
 
 ```bash
 # Tests rápidos (sin PostgreSQL)
