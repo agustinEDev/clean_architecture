@@ -391,7 +391,49 @@ class ServicioPreciosEstaticos:
 
 ### 🏗️ **Los 4 Elementos del Conocimiento Médico:**
 
-#### 🏥 **1. Las Órdenes Médicas** (`domain/entities/`) - Las Entidades Principales
+#### 🏥 **1. Las Órdenes Médicas** (`domain/entities/order.py`) - La Entidad Principal
+```python
+# order.py - La Entidad Principal del Hospital
+class Order:
+    def __init__(self, order_id: OrderId, customer_id: str):
+        self._logger = get_logger('orders_ms.domain.entities.order')
+        self._order_id = order_id            # 🏷️ "Número único de orden"
+        self._customer_id = customer_id      # 👤 "CUST-12345" - ID del paciente
+        self._items = []                     # 💊 "Lista de tratamientos (tuplas)"
+        self._domain_events = []             # 📢 "Eventos médicos pendientes"
+        self._logger.debug(f"Order created with ID: {order_id.code} for customer: {customer_id}")
+
+    @classmethod 
+    def create(cls, order_id: OrderId, customer_id: str) -> 'Order':
+        # 🏥 "Método especial para crear órdenes médicas"
+        logger = get_logger('orders_ms.domain.entities.order')
+        logger.info(f"Creating new order with ID: {order_id.code} for customer: {customer_id}")
+        order = cls(order_id, customer_id)
+        # 📢 "¡ORDEN MÉDICA CREADA!"
+        order._domain_events.append(OrderCreated(order_id.code, customer_id))
+        logger.info(f"Order created successfully with ID: {order_id.code}")
+        return order
+        
+    def add_item(self, sku: SKU, quantity: Quantity, price: Price):
+        # 🎯 SIN validaciones aquí - ¡Las validaciones están en los Value Objects!
+        # 🛡️ SKU, Quantity y Price ya validaron todo antes de llegar aquí
+        
+        self._logger.info(f"Adding item to order {self._order_id.code}: SKU={sku.code}, Quantity={quantity.amount}, Price={price.amount}")
+        
+        # 💊 "Agregar tratamiento como tupla"
+        self._items.append((sku, quantity, price))
+        
+        # 📢 "¡TRATAMIENTO AGREGADO!" - Evento médico automático
+        self._domain_events.append(ItemAdded(self._order_id.code, sku.code, quantity.amount, price.amount))
+        
+        self._logger.debug(f"Item added successfully. Order {self._order_id.code} now has {len(self._items)} items")
+
+    def pull_domain_events(self):
+        # 📢 "Sacar todos los eventos médicos para notificar al hospital"
+        events = self._domain_events.copy()  # Copia los eventos
+        self._domain_events.clear()          # Los limpia de la entidad  
+        return events                        # Los devuelve para publicar
+```
 ```python
 # order.py - La Entidad Principal
 class Order:
@@ -437,54 +479,51 @@ class Order:
 
 #### 💎 **2. Los Valores Médicos** (`domain/value_objects/`) - Objetos de Valor
 ```python
-# price.py - Como un "Costo de Tratamiento Exacto"
+# price.py - "Costo de Tratamiento con Moneda"
 class Price:
-    def __init__(self, amount: Decimal):
-        # 🔍 Auto-validación médica
+    def __init__(self, amount: Union[float, Decimal], currency: str = "EUR"):
+        # �️ "Validaciones médicas estrictas"
+        if not isinstance(amount, (int, float, Decimal)):
+            raise TypeError("Amount must be a number")
         if amount < 0:
-            raise ValueError("🚫 El precio no puede ser negativo!")
+            raise ValueError("🚫 Price amount cannot be negative")
+        if not currency or len(currency) != 3:
+            raise ValueError("🚫 Currency must be a 3-letter code")
         
-        self._amount = amount.quantize(Decimal('0.01'))  # 💰 "15.50"
-        
-    @property
-    def value(self) -> Decimal:
-        return self._amount
-        
-    def add(self, other_price: 'Price') -> 'Price':
-        # 🧮 "Sé sumar costos de tratamientos"
-        return Price(self._amount + other_price._amount)
+        self._amount = Decimal(str(amount)).quantize(Decimal('0.01'))  # 💰 "15.50 EUR"
+        self._currency = currency.upper()
 
-# order_id.py - Como un "Número de Orden Médica"
-class OrderId:
-    def __init__(self, value: str):
-        # 🛡️ "Solo acepto IDs de órdenes válidos"
-        if not value or len(value.strip()) == 0:
-            raise ValueError("🚫 Order ID no puede estar vacío!")
-            
-        self.value = value.upper()
+# sku.py - "Código de Tratamiento Médico"
+class SKU:
+    def __init__(self, code: str):
+        code = code.strip().upper()
+        # 🛡️ "Validaciones de código médico"
+        if not (8 <= len(code) <= 12):
+            raise ValueError("🚫 SKU code must be between 8 and 12 characters long")
+        if not code.isalnum():
+            raise ValueError("🚫 SKU code must be alphanumeric")
         
-    @staticmethod
-    def generate() -> 'OrderId':
-        # 🎲 "Genero un ID único para cada orden médica"
-        return OrderId(f"ORD-{uuid4().hex[:8].upper()}")
+        self._code = code  # 🔤 "CONSULTAG1" (8-12 caracteres alfanuméricos)
 
-# sku.py - Como un "Código de Tratamiento"
-class Sku:
-    def __init__(self, value: str):
-        # 🛡️ "Solo acepto códigos de tratamiento válidos"
-        if not value or value.strip() == "":
-            raise ValueError("🚫 SKU no puede estar vacío!")
-            
-        self.value = value.upper().strip()  # 🔤 "CONSULTA_GENERAL"
-
-# quantity.py - Como una "Cantidad de Tratamiento"
+# quantity.py - "Cantidad de Dosis/Sesiones"
 class Quantity:
-    def __init__(self, value: int):
-        # 🛡️ "Solo acepto cantidades médicas válidas"
-        if value <= 0:
-            raise ValueError("🚫 La cantidad debe ser positiva!")
-            
-        self.value = value  # 🔢 "2 dosis"
+    def __init__(self, amount: int):
+        # 🛡️ "Validaciones de dosis médicas"
+        if amount <= 0:
+            raise ValueError("🚫 Quantity must be a positive integer")
+        if amount >= 1000:
+            raise ValueError("🚫 Quantity must be less than 1000")
+        
+        self._amount = amount  # � "2 sesiones" (1-999)
+
+# order_id.py - "Número de Expediente Médico" 
+class OrderId:
+    def __init__(self, code: str):
+        # 🛡️ "Validaciones de ID médico"
+        if not code or len(code.strip()) == 0:
+            raise ValueError("🚫 Order ID cannot be empty")
+        
+        self._code = code.strip()  # 🏷️ "ORD-ABC12345"
 ```
 
 #### 📢 **3. Los Eventos Médicos** (`domain/events/`) - Eventos del Dominio
