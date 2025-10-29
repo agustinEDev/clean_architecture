@@ -105,11 +105,11 @@ class TestGetOrderEndpoint(unittest.TestCase):
         response = self.client.get("/orders/ORDER-NOTFOUND")
         
         # Assert: Debe retornar 404
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
         
         data = response.json()
-        self.assertIn("error", data)
-        self.assertEqual(data["error"], "Order not found")
+        self.assertIn("detail", data)
+        self.assertEqual(data["detail"], "Order ORDER-NOTFOUND not found")
     
     def test_get_order_with_special_characters_in_id(self):
         """Test: GET /orders/{order_id} - ID con caracteres especiales válidos"""

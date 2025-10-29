@@ -3,7 +3,9 @@ FastAPI Application - Orders Microservice
 Mi primer endpoint para entender FastAPI
 """
 import uvicorn
-from fastapi import FastAPI
+import logging
+from fastapi import FastAPI, HTTPException, status
+from config.logging_config import setup_dev_logging
 from fastapi.middleware.cors import CORSMiddleware
 from container import Container
 from application.dtos.create_order_dtos import CreateOrderRequestDTO
@@ -13,6 +15,9 @@ from application.dtos.list_orders_dtos import ListOrdersRequestDTO
 from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+
+# Inicializar sistema de logging
+setup_dev_logging()
 
 # Crear la aplicación FastAPI
 app = FastAPI()
@@ -99,57 +104,81 @@ def add_item_to_order(order_id: str, request: AddItemRequest):
         }
 
 # Endpoint para obtener detalles de una orden
-@app.get("/orders/{order_id}")
+@app.get("/orders/{order_id}", status_code=200)
 def get_order(order_id: str):
-    print(f"🔍 DEBUG: Obteniendo orden - Order ID: {order_id}")
+    """
+    Obtiene los detalles de una orden específica
+    
+    Returns:
+        200: Orden encontrada exitosamente
+        404: Orden no encontrada
+        500: Error interno del servidor
+    """
+    logger = logging.getLogger(__name__)
+    logger.info(f"Getting order details for order_id: {order_id}")
     
     try:
         # 1. Convertir a DTO de aplicación
         dto = GetOrderRequestDTO(order_id=order_id)
         
-        # 2. Usar el caso de uso
+        # 2. Usar el caso de uso (lógica de dominio)
         use_case = container.get_order_use_case()
         response_dto = use_case.execute(dto)
         
+        # 3. Validar resultado del dominio
         if not response_dto:
-            print(f"❌ DEBUG: Orden no encontrada: {order_id}")
-            return {"error": "Order not found", "order_id": order_id}
+            logger.warning(f"Order not found: {order_id}")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Order {order_id} not found"
+            )
         
-        print(f"✅ DEBUG: Orden encontrada con {response_dto.items_count} items, total: ${response_dto.total_amount}")
+        logger.info(f"Order {order_id} retrieved successfully with {response_dto.items_count} items")
         
-        # 3. Devolver respuesta HTTP
+        # 4. Devolver respuesta HTTP (capa de presentación)
         return {
             "order_id": response_dto.order_id,
             "customer_id": response_dto.customer_id,
             "items": response_dto.items,
             "total_amount": response_dto.total_amount,
-            "items_count": response_dto.items_count,
-            "message": "Order retrieved successfully"
+            "items_count": response_dto.items_count
         }
         
+    except HTTPException:
+        # Re-lanzar HTTPException (mantener códigos específicos)
+        raise
     except Exception as e:
-        print(f"❌ ERROR: {e}")
-        return {
-            "error": f"Error: {str(e)}",
-            "order_id": order_id
-        }
+        # Error interno: no exponer detalles al cliente
+        logger.error(f"Internal error getting order {order_id}: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
 
 # Endpoint para listar todas las órdenes
-@app.get("/orders")
+@app.get("/orders", status_code=200)
 def list_orders():
-    print("🔍 DEBUG: Listando todas las órdenes")
+    """
+    Lista todas las órdenes del sistema
+    
+    Returns:
+        200: Lista de órdenes obtenida exitosamente
+        500: Error interno del servidor
+    """
+    logger = logging.getLogger(__name__)
+    logger.info("Listing all orders")
     
     try:
         # 1. Crear DTO de petición
         dto = ListOrdersRequestDTO()
         
-        # 2. Usar el caso de uso
+        # 2. Usar el caso de uso (lógica de dominio)
         use_case = container.list_orders_use_case()
         response_dto = use_case.execute(dto)
         
-        print(f"✅ DEBUG: Encontradas {response_dto.total_orders} órdenes")
+        logger.info(f"Retrieved {response_dto.total_orders} orders successfully")
         
-        # 3. Convertir a respuesta HTTP
+        # 3. Convertir a respuesta HTTP (capa de presentación)
         orders_data = []
         for order_summary in response_dto.orders:
             orders_data.append({
@@ -161,17 +190,16 @@ def list_orders():
         
         return {
             "orders": orders_data,
-            "total_orders": response_dto.total_orders,
-            "message": "Orders retrieved successfully"
+            "total_orders": response_dto.total_orders
         }
         
     except Exception as e:
-        print(f"❌ ERROR: {e}")
-        return {
-            "error": f"Error: {str(e)}",
-            "orders": [],
-            "total_orders": 0
-        }
+        # Error interno: no exponer detalles al cliente
+        logger.error(f"Internal error listing orders: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Internal server error"
+        )
 
 @app.get("/")
 def read_root():
