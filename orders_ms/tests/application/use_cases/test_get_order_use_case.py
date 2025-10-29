@@ -12,15 +12,17 @@ from domain.value_objects.sku import SKU
 from domain.value_objects.price import Price
 from domain.value_objects.quantity import Quantity
 from infrastructure.repositories.in_memory_order_repository import InMemoryOrderRepository
+from infrastructure.database.in_memory_unit_of_work import InMemoryUnitOfWork
 
 
 class TestGetOrderUseCase(unittest.TestCase):
-    
+
     def setUp(self):
         """Configurar el entorno de testing"""
         self.repository = InMemoryOrderRepository()
-        self.use_case = GetOrderUseCase(self.repository)
-    
+        self.uow = InMemoryUnitOfWork(self.repository)
+        self.use_case = GetOrderUseCase(self.uow)
+
     def test_get_existing_order_with_items(self):
         """Test: Obtener una orden existente con items"""
         # Arrange: Crear y guardar una orden con items

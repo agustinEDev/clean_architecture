@@ -10,10 +10,15 @@ from domain.entities.order import Order
 
 class TestCreateOrderUseCase(unittest.TestCase):
     def setUp(self):
-        self.mock_order_repository = MagicMock()
+        # Crear mock del UnitOfWork
+        self.mock_uow = MagicMock()
+        self.mock_orders_repo = MagicMock()
+        self.mock_uow.orders = self.mock_orders_repo
         self.mock_event_bus = MagicMock()
+        
+        # Crear use case con UoW
         self.use_case = CreateOrderUseCase(
-            order_repository=self.mock_order_repository,
+            uow=self.mock_uow,
             event_bus=self.mock_event_bus
         )
 
@@ -26,8 +31,8 @@ class TestCreateOrderUseCase(unittest.TestCase):
         response_dto = self.use_case.execute(request_dto)
 
         # Assert
-        self.mock_order_repository.save.assert_called_once()
-        saved_order = self.mock_order_repository.save.call_args[0][0]
+        self.mock_orders_repo.save.assert_called_once()
+        saved_order = self.mock_orders_repo.save.call_args[0][0]
         self.assertIsInstance(saved_order, Order)
         self.assertEqual(saved_order.customer_id, customer_id)
 

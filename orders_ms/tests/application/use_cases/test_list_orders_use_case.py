@@ -12,6 +12,7 @@ from domain.value_objects.sku import SKU
 from domain.value_objects.price import Price
 from domain.value_objects.quantity import Quantity
 from infrastructure.repositories.in_memory_order_repository import InMemoryOrderRepository
+from infrastructure.database.in_memory_unit_of_work import InMemoryUnitOfWork
 
 
 class TestListOrdersUseCase(unittest.TestCase):
@@ -19,8 +20,9 @@ class TestListOrdersUseCase(unittest.TestCase):
     def setUp(self):
         """Configurar el entorno de testing"""
         self.repository = InMemoryOrderRepository()
-        self.use_case = ListOrdersUseCase(self.repository)
-    
+        self.uow = InMemoryUnitOfWork(self.repository)
+        self.use_case = ListOrdersUseCase(self.uow)
+
     def test_list_orders_empty_repository(self):
         """Test: Listar órdenes cuando el repositorio está vacío"""
         # Act: Listar órdenes

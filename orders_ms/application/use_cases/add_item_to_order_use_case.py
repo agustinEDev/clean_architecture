@@ -1,7 +1,7 @@
 """
 Caso de uso: Agregar Item a Pedido
 """
-from application.ports.order_repository import OrderRepository
+from application.ports.unit_of_work import UnitOfWork
 from application.ports.pricing_service import PricingService
 from application.ports.event_bus import EventBus
 from domain.value_objects.order_id import OrderId
@@ -10,8 +10,8 @@ from domain.value_objects.quantity import Quantity
 from application.dtos.add_item_to_order_dtos import AddItemToOrderRequestDTO, AddItemToOrderResponseDTO
 
 class AddItemToOrderUseCase:
-    def __init__(self, order_repository: OrderRepository, pricing_service: PricingService, event_bus: EventBus):
-        self.order_repository = order_repository
+    def __init__(self, uow: UnitOfWork, pricing_service: PricingService, event_bus: EventBus):
+        self.uow = uow
         self.pricing_service = pricing_service
         self.event_bus = event_bus
 
@@ -20,23 +20,21 @@ class AddItemToOrderUseCase:
         sku = SKU(add_item_request_dto.sku)
         quantity = Quantity(add_item_request_dto.quantity)
 
-        print(f"🔍 USE CASE DEBUG: Buscando orden con ID: {order_id.code}")
-        order = self.order_repository.get(order_id.code)
-        if not order:
-            print(f"❌ USE CASE DEBUG: Orden no encontrada: {order_id.code}")
-            return AddItemToOrderResponseDTO(success=False)
-        print(f"✅ USE CASE DEBUG: Orden encontrada: {order_id.code}")
-
-        print(f"🔍 USE CASE DEBUG: Verificando si producto existe: {sku.code}")
         if not self.pricing_service.product_exists(sku):
-            print(f"❌ USE CASE DEBUG: Producto no existe: {sku.code}")
             return AddItemToOrderResponseDTO(success=False)
-        print(f"✅ USE CASE DEBUG: Producto existe: {sku.code}")
 
-        price = self.pricing_service.get_price(sku)
-        order.add_item(sku, quantity, price)
+        # ✅ Unit of Work: Transacción para agregar item a la orden
+        with self.uow:
+            order = self.uow.orders.get(order_id.code)
+            if not order:
+                return AddItemToOrderResponseDTO(success=False)
 
-        self.order_repository.save(order)
-        self.event_bus.publish_many(order.pull_domain_events())
+            price = self.pricing_service.get_price(sku)
+            order.add_item(sku, quantity, price)
+            self.uow.orders.save(order)
+            # Extraer eventos antes de salir de la transacción
+            events = order.pull_domain_events()
 
+        # ✅ Publicar eventos solo si la transacción fue exitosa
+        self.event_bus.publish_many(events)
         return AddItemToOrderResponseDTO(success=True)
