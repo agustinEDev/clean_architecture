@@ -26,30 +26,30 @@ Build a production-ready orders microservice demonstrating Clean Architecture pr
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│  🌐 PRESENTATION LAYER (Web Interface)                 │
-│  ├── FastAPI Application (main.py)                     │
-│  ├── HTTP Endpoints (/orders, /orders/{id}/items)      │
-│  ├── Static Frontend (HTML/CSS/JS)                     │
-│  └── Request/Response Models (Pydantic)                │
+│  🌐 PRESENTATION LAYER (Web Interface)                  │
+│  ├── FastAPI Application (main.py)                      │
+│  ├── HTTP Endpoints (/orders, /orders/{id}/items)       │
+│  ├── Static Frontend (HTML/CSS/JS)                      │
+│  └── Request/Response Models (Pydantic)                 │
 ├─────────────────────────────────────────────────────────┤
-│  💼 APPLICATION LAYER (Use Cases & Orchestration)      │
-│  ├── Use Cases (create_order, add_item, get_order)     │
-│  ├── DTOs (Data Transfer Objects - 8 total)            │
-│  ├── Ports (Interfaces/Contracts - 4 interfaces)       │
-│  └── Dependency Container (Composition Root)           │
+│  💼 APPLICATION LAYER (Use Cases & Orchestration)       │ 
+│  ├── Use Cases (create_order, add_item, get_order)      │
+│  ├── DTOs (Data Transfer Objects - 9 total)             │
+│  ├── Ports (Interfaces/Contracts - 4 interfaces)        │
+│  └── Dependency Container (Composition Root)            │
 ├─────────────────────────────────────────────────────────┤
-│  🔧 INFRASTRUCTURE LAYER (External Integrations)       │
-│  ├── Database (PostgreSQL + SQLAlchemy ORM)            │
-│  ├── Repositories (In-Memory & PostgreSQL)             │
-│  ├── Unit of Work (Transaction Management)             │
-│  ├── Event Bus (Domain Events)                         │
-│  └── External Services (Pricing)                       │
+│  🔧 INFRASTRUCTURE LAYER (External Integrations)        │
+│  ├── Database (PostgreSQL + SQLAlchemy ORM)             │
+│  ├── Repositories (In-Memory & PostgreSQL)              │
+│  ├── Unit of Work (Transaction Management)              │
+│  ├── Event Bus (Domain Events)                          │
+│  └── External Services (Pricing)                        │
 ├─────────────────────────────────────────────────────────┤
-│  ⚕️ DOMAIN LAYER (Business Logic Core)                 │
-│  ├── Entities (Order - Core Business Object)           │
-│  ├── Value Objects (OrderId, SKU, Quantity, Price)     │
-│  ├── Domain Events (OrderCreated, ItemAdded)           │
-│  └── Pure Business Rules (No external dependencies)    │
+│  ⚕️ DOMAIN LAYER (Business Logic Core)                  │
+│  ├── Entities (Order - Core Business Object)            │
+│  ├── Value Objects (OrderId, SKU, Quantity, Price)      │
+│  ├── Domain Events (OrderCreated, ItemAdded)            │
+│  └── Pure Business Rules (No external dependencies)     │
 └─────────────────────────────────────────────────────────┘
 ```
 
